@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hán Tự Thâm Uyển AI - Premium Smart Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Noto Serif TC', 'serif'],
+                    },
+                    colors: {
+                        scholardark: '#0F141C',
+                        scholarlight: '#17202E',
+                        scholaraccent: '#C5A880', /* Golden Sand */
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 20, 28, 0.1);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #C5A880;
+            border-radius: 99px;
+        }
+        .ink-canvas {
+            background-color: #1A2436;
+            background-image: 
+                radial-gradient(rgba(197, 168, 128, 0.15) 1px, transparent 0),
+                linear-gradient(to right, rgba(197, 168, 128, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(197, 168, 128, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px, 12px 12px, 12px 12px;
+            cursor: crosshair;
+        }
+        .card-flip {
+            perspective: 1200px;
+        }
+        .card-flip-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .card-flip.flipped .card-flip-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .glow-gold {
+            box-shadow: 0 0 20px rgba(197, 168, 128, 0.15);
+        }
+
+        @keyframes inkBleed {
+            0% {
+                filter: blur(12px) contrast(15);
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            50% {
+                filter: blur(4px) contrast(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                filter: blur(0) contrast(1);
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .ink-bleed-active {
+            animation: inkBleed 1.8s ease-out forwards;
+        }
+
+        @keyframes goldSparks {
+            0% {
+                transform: translateY(20px) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-40px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .gold-spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #FFE29A 0%, #C5A880 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: goldSparks 2s ease-out infinite;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+        
+        .float-slow {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-scholardark text-slate-200 font-sans min-h-screen flex flex-col selection:bg-amber-500/20 selection:text-amber-300">
+
+    <header class="bg-scholarlight/80 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 sm:space-x-4 min-w-0">
+                <img src="./logo-removebg-preview.png" class="w-12 sm:w-16 md:w-20 shrink-0" alt="Logo">
+                <div class="min-w-0">
+                    <h1 class="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white truncate">
+                        Hán Tự
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium hidden sm:block truncate">Bản đồ chiết tự tự động bóc tách & mô phỏng động họa chuyển hình</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                <button onclick="switchTab('explorer')" id="btn-tab-explorer" class="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5 sm:gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i> <span class="hidden sm:inline">Phân Tích AI</span>
+                </button>
+                <button onclick="switchTab('review')" id="btn-tab-review" class="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200 flex items-center gap-1.5 sm:gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i> <span class="hidden sm:inline">Luyện Tập (SRS)</span>
+                </button>
+                <button onclick="openSettingsModal()" class="p-2 sm:p-3 bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 rounded-xl transition-all relative border border-slate-700" title="Cấu hình Gemini API">
+                    <i class="fa-solid fa-gear text-base sm:text-lg"></i>
+                    <span id="api-status-badge" class="absolute top-1 right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 border-2 border-scholardark"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col lg:flex-row gap-8">
+        <section class="w-full lg:w-[400px] shrink-0 flex flex-col gap-6">
+            
+            <div id="search-sidebar-container" class="bg-scholarlight p-6 rounded-3xl border border-slate-800/80 shadow-xl flex flex-col gap-5">
+                <div>
+                    <h3 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-keyboard"></i> Tra Cứu Chữ Hán
+                    </h3>
+                    <div class="relative">
+                        <input type="text" id="ai-input" placeholder="Nhập chữ Hán bất kỳ (Ví dụ: 剛好, 應該)..." 
+                               onkeydown="if(event.key === 'Enter') executeAIEngine()"
+                               class="w-full pl-5 pr-14 py-4 bg-scholardark border border-slate-700/80 rounded-2xl text-lg text-white font-serif focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all placeholder:text-slate-500 placeholder:font-sans">
+                        <button onclick="executeAIEngine()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-amber-500 hover:bg-amber-600 text-scholardark font-extrabold rounded-xl flex items-center justify-center shadow transition-all active:scale-95" title="Phân tích">
+                            <i class="fa-solid fa-arrow-right text-base"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="api-status-banner" class="bg-amber-950/20 border border-amber-900/30 rounded-2xl p-4 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-400 mt-1"></i>
+                    <div class="flex-grow">
+                        <h4 class="text-xs font-bold text-amber-200" id="api-banner-title">Kiểm tra kết nối API...</h4>
+                        <p class="text-[11px] text-slate-400 mt-1" id="api-banner-desc">Để chạy trực tiếp không lỗi, hãy mở mã nguồn và dán khóa của bạn vào biến DIRECT_API_KEY ở dòng 284.</p>
+                        <button onclick="openSettingsModal()" class="mt-2.5 text-[11px] text-amber-400 font-bold hover:underline flex items-center gap-1">
+                            Cấu hình thủ công <i class="fa-solid fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notebook-sidebar-container" class="bg-scholarlight p-6 rounded-3xl border border-slate-800/80 shadow-xl flex-grow flex flex-col max-h-[500px] lg:max-h-[60vh] hidden">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-amber-500"></i> Sổ Tay Từ Vựng (<span id="notebook-count">0</span>)
+                    </h3>
+                    <button onclick="triggerClearModal()" class="text-[10px] font-extrabold text-red-400 hover:text-red-300 flex items-center gap-1">
+                        <i class="fa-solid fa-trash"></i> Xóa hết
+                    </button>
+                </div>
+
+                <div class="flex gap-1.5 mb-3">
+                    <button onclick="filterNotebook('all')" id="filter-all" class="flex-1 py-1 px-2 text-[10px] font-bold rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 transition-all">Tất cả</button>
+                    <button onclick="filterNotebook('new')" id="filter-new" class="flex-1 py-1 px-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 transition-all">Mới học</button>
+                    <button onclick="filterNotebook('learning')" id="filter-learning" class="flex-1 py-1 px-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 transition-all">Đang ôn</button>
+                    <button onclick="filterNotebook('mastered')" id="filter-mastered" class="flex-1 py-1 px-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 transition-all">Đã thuộc</button>
+                </div>
+
+                <div id="notebook-list" class="flex-grow overflow-y-auto custom-scroll space-y-2.5 pr-1">
+                    <!-- Sẽ được điền động -->
+                </div>
+            </div>
+
+        </section>
+
+        <section id="content-section" class="flex-grow">
+            
+            <div id="tab-explorer" class="space-y-6">
+                
+                <div id="view-empty" class="bg-scholarlight rounded-3xl border border-slate-800/80 p-12 text-center shadow-xl flex flex-col items-center justify-center min-h-[500px]">
+                    <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-3xl mb-6 shadow-inner animate-pulse">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white tracking-wide">Trình Phân Tích Chữ Hán Thư Họa Gemini AI</h3>
+                    <p class="text-slate-400 max-w-md mt-2 text-sm leading-relaxed">
+                        Hãy nhập chữ Hán hoặc cụm từ bạn muốn tự học vào ô tìm kiếm bên trái. Hệ thống sở hữu động cơ thông minh tự bảo vệ chống nghẽn API!
+                    </p>
+                    <div class="mt-8">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-3">Từ tiêu biểu khuyên dùng</span>
+                        <div class="flex flex-wrap gap-2 justify-center max-w-lg">
+                            <button onclick="quickSelectWord('應該')" class="px-3.5 py-2 bg-slate-800/80 hover:bg-slate-700/80 hover:text-amber-400 text-slate-300 transition-all rounded-xl text-xs font-semibold border border-slate-700/60 font-serif">應該 (Nên)</button>
+                            <button onclick="quickSelectWord('危險')" class="px-3.5 py-2 bg-slate-800/80 hover:bg-slate-700/80 hover:text-amber-400 text-slate-300 transition-all rounded-xl text-xs font-semibold border border-slate-700/60 font-serif">危險 (Nguy hiểm)</button>
+                            <button onclick="quickSelectWord('客氣')" class="px-3.5 py-2 bg-slate-800/80 hover:bg-slate-700/80 hover:text-amber-400 text-slate-300 transition-all rounded-xl text-xs font-semibold border border-slate-700/60 font-serif">客氣 (Khách sáo)</button>
+                            <button onclick="quickSelectWord('着急')" class="px-3.5 py-2 bg-slate-800/80 hover:bg-slate-700/80 hover:text-amber-400 text-slate-300 transition-all rounded-xl text-xs font-semibold border border-slate-700/60 font-serif">着急 (Lo lắng)</button>
+                            <button onclick="quickSelectWord('打掃')" class="px-3.5 py-2 bg-slate-800/80 hover:bg-slate-700/80 hover:text-amber-400 text-slate-300 transition-all rounded-xl text-xs font-semibold border border-slate-700/60 font-serif">打掃 (Quét dọn)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-loading" class="hidden bg-scholarlight rounded-3xl border border-slate-800/80 p-12 text-center shadow-xl min-h-[500px] flex flex-col items-center justify-center">
+                    <div class="relative w-20 h-20 mb-6">
+                        <div class="absolute inset-0 rounded-full border-4 border-slate-800"></div>
+                        <div class="absolute inset-0 rounded-full border-4 border-amber-500 border-t-transparent animate-spin"></div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white tracking-wide" id="loading-title">Gemini đang giải mã chữ Hán...</h3>
+                    <p class="text-slate-400 text-sm mt-1 max-w-sm" id="loading-desc">AI đang bóc tách phân tích chiết tự và tạo kịch bản thiết kế hoạt họa.</p>
+                </div>
+
+                <div id="view-detail" class="hidden space-y-6">
+                    
+                    <div class="bg-scholarlight rounded-3xl border border-slate-800/80 p-6 shadow-xl flex flex-col justify-between gap-6">
+                        <div class="flex items-center space-x-5 shrink-0">
+                            <div class="min-w-[6rem] h-24 sm:min-w-[7rem] sm:h-28 px-4 bg-scholardark border border-slate-700 rounded-2xl flex items-center justify-center text-5xl sm:text-6xl font-serif text-white shadow-inner relative overflow-hidden font-black whitespace-nowrap">
+                                <span id="dt-hz"></span>
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <span id="dt-py" class="text-2xl font-extrabold text-amber-400 font-mono"></span>
+                                    <span id="dt-hv" class="text-base font-bold text-amber-200/90 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20" title="Hán Việt"></span>
+                                    <button onclick="playTTSMain()" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-400 rounded-full flex items-center justify-center transition-all border border-slate-700" title="Phát âm">
+                                        <i class="fa-solid fa-volume-high text-sm"></i>
+                                    </button>
+                                </div>
+                                <h2 id="dt-mean" class="text-xl sm:text-2xl font-extrabold text-slate-200 mt-1"></h2>
+                                
+                                <div class="mt-3 flex items-center gap-2">
+                                    <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Trạng thái</span>
+                                    <select id="dt-srs-status" onchange="updateWordSRS()" class="bg-scholardark border border-slate-700 text-xs text-slate-300 px-2 py-0.5 rounded-lg focus:outline-none">
+                                        <option value="new">Mới học (New)</option>
+                                        <option value="learning">Đang ôn (Learning)</option>
+                                        <option value="mastered">Đã thuộc (Mastered)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Chiết tự các Bộ thủ -->
+                    <div class="bg-scholarlight rounded-3xl border border-slate-800/80 p-6 shadow-xl flex flex-col">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-amber-500"></i> Chiết tự các Bộ thủ
+                        </h3>
+                        <div id="dt-radicals" class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto max-h-[350px] pr-1 custom-scroll">
+                            <!-- Được sinh động -->
+                        </div>
+                    </div>
+
+                    <!-- Trình Chiếu Thư Họa Động -->
+                    <div class="bg-scholarlight rounded-3xl border border-slate-800/80 p-6 shadow-xl flex flex-col justify-between relative overflow-hidden min-h-[180px] glow-gold">
+                        <div class="absolute inset-0 pointer-events-none" id="gold-particles-container"></div>
+                        
+                        <div class="flex items-center justify-between z-10 pb-4 border-b border-slate-800">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <i class="fa-solid fa-play animate-pulse text-amber-500"></i> Trình Chiếu Thư Họa Động
+                            </span>
+                            <button onclick="playMnemonicCinema()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-scholardark font-extrabold rounded-xl text-xs transition-all flex items-center gap-1.5 active:scale-95 shadow-md">
+                                <i class="fa-solid fa-film"></i> Xem Thư Họa
+                            </button>
+                        </div>
+
+                        <div class="flex-grow flex items-center justify-center py-6 z-10" id="cinema-stage-content">
+                            <span class="text-slate-500 text-sm text-center italic">Bấm "Xem Thư Họa" để bắt đầu dệt câu chuyện chữ thành hình vẽ</span>
+                        </div>
+                    </div>
+
+                    <!-- Luyện tập viết và hướng dẫn nét thuận -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- Bảng tập viết thư pháp -->
+                        <div class="lg:col-span-7 bg-scholarlight rounded-3xl border border-slate-800/80 p-6 shadow-xl flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <i class="fa-solid fa-pen-nib text-amber-500"></i> Bảng tập viết thư pháp
+                                </h3>
+                                <div class="flex gap-2">
+                                    <button onclick="clearCanvas()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-[10px] font-bold text-slate-300 border border-slate-700 transition-all flex items-center gap-1">
+                                        <i class="fa-solid fa-eraser"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-inner">
+                                <canvas id="writing-pad" class="ink-canvas w-full h-full block"></canvas>
+                                <div class="absolute bottom-3 left-3 bg-scholardark/80 backdrop-blur-sm border border-slate-700 px-3 py-1.5 rounded-xl text-[10px] text-slate-400 font-medium">
+                                    Dùng chuột hoặc ngón tay vẽ để luyện đúng thứ tự nét
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hướng dẫn thứ tự nét thuận -->
+                        <div class="lg:col-span-5 bg-scholarlight rounded-3xl border border-slate-800/80 p-6 shadow-xl flex flex-col">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-list-ol text-amber-500"></i> Hướng dẫn thứ tự nét thuận
+                            </h3>
+                            <div id="dt-stroke-instructions" class="flex-grow space-y-2.5 overflow-y-auto max-h-[350px] pr-1 custom-scroll text-xs text-slate-300">
+                                <!-- Nét vẽ -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <div class="lg:col-span-6 bg-gradient-to-br from-amber-500/10 to-amber-800/5 border border-amber-500/20 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+                            <div class="absolute -right-8 -bottom-8 text-amber-500/5 text-9xl font-serif select-none pointer-events-none">
+                                <i class="fa-solid fa-quote-right"></i>
+                            </div>
+                            <div class="relative z-10 flex flex-col justify-between h-full">
+                                <div>
+                                    <h3 class="text-xs font-extrabold tracking-widest text-amber-400 uppercase flex items-center gap-2 mb-4">
+                                        <i class="fa-solid fa-sparkles animate-pulse"></i> Câu chuyện liên tưởng AI
+                                    </h3>
+                                    <p id="dt-story" class="text-slate-200 text-sm sm:text-base leading-relaxed italic font-medium"></p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-slate-800/80">
+                                    <span class="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider block mb-1">Mẹo nhớ nhanh</span>
+                                    <p id="dt-tip" class="text-xs text-slate-400 leading-snug"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-6 bg-scholarlight rounded-3xl border border-slate-800/80 p-6 shadow-xl">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-language text-amber-500"></i> Ví dụ ngữ cảnh thực tế
+                            </h3>
+                            <div id="dt-examples" class="space-y-4">
+                                <!-- Câu ví dụ -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="tab-review" class="hidden space-y-6">
+                <div class="max-w-xl mx-auto flex flex-col items-center">
+                    
+                    <div class="w-full flex justify-between items-center mb-6">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                            Thẻ luyện tập: <span id="review-idx" class="text-amber-400">0</span> / <span id="review-total" class="text-slate-300">0</span>
+                        </div>
+                        <button onclick="shuffleReviewCards()" class="text-xs font-bold text-slate-300 hover:text-amber-400 flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-3.5 py-1.5 rounded-xl transition-all">
+                            <i class="fa-solid fa-shuffle"></i> Xáo trộn thẻ
+                        </button>
+                    </div>
+
+                    <div onclick="flipReviewCard()" id="review-card" class="card-flip w-full h-[380px] cursor-pointer mb-6">
+                        <div class="card-flip-inner relative w-full h-full text-center transition-transform duration-500 select-none">
+                            
+                            <div class="card-front absolute w-full h-full bg-scholarlight border border-slate-800 rounded-3xl shadow-2xl p-8 flex flex-col justify-between items-center">
+                                <span class="text-[10px] text-slate-500 font-extrabold uppercase tracking-widest">Mặt trước - Bạn nhớ nghĩa của từ này?</span>
+                                <div id="card-front-hz" class="text-7xl sm:text-8xl font-serif text-white py-10 font-bold select-none whitespace-nowrap"></div>
+                                <div class="text-amber-400 text-xs font-semibold flex items-center gap-1">
+                                    <span>Chạm để xem chi tiết chiết tự</span> <i class="fa-solid fa-angle-right text-[10px]"></i>
+                                </div>
+                            </div>
+
+                            <div class="card-back absolute w-full h-full bg-slate-950 border border-slate-800 rounded-3xl shadow-2xl p-6 flex flex-col justify-between overflow-y-auto custom-scroll text-left">
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                                    <span id="card-back-py" class="font-extrabold text-amber-400 text-xl font-serif"></span>
+                                    <span id="card-back-mean" class="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-xl"></span>
+                                </div>
+                                
+                                <div class="flex-grow py-4 space-y-4">
+                                    <div>
+                                        <span class="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider block mb-1">Ý nghĩa câu chuyện</span>
+                                        <p id="card-back-story" class="text-xs text-slate-300 leading-relaxed italic"></p>
+                                    </div>
+                                    <div id="card-back-radicals-box" class="flex flex-wrap gap-1.5 pt-2">
+                                        <!-- Được chèn động -->
+                                    </div>
+                                </div>
+
+                                <div class="text-center text-[10px] text-slate-500 border-t border-slate-800 pt-2.5">
+                                    Chạm lại để lật lại mặt trước
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-scholarlight border border-slate-800/80 p-5 rounded-2xl flex flex-col gap-3">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase text-center tracking-widest">Cập nhật mức độ nhớ từ</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="setSRSGrade('new')" class="flex-1 py-3 bg-red-950/40 text-red-400 border border-red-900/40 hover:bg-red-900/20 text-xs font-bold rounded-xl transition-all">Mới học</button>
+                            <button onclick="setSRSGrade('learning')" class="flex-1 py-3 bg-amber-950/40 text-amber-400 border border-amber-900/40 hover:bg-amber-900/20 text-xs font-bold rounded-xl transition-all">Đang ôn</button>
+                            <button onclick="setSRSGrade('mastered')" class="flex-1 py-3 bg-emerald-950/40 text-emerald-400 border border-emerald-900/40 hover:bg-emerald-900/20 text-xs font-bold rounded-xl transition-all">Đã thuộc</button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4 w-full mt-4">
+                        <button onclick="prevReviewCard()" class="flex-1 py-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 font-bold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2 text-xs">
+                            <i class="fa-solid fa-arrow-left"></i> Thẻ trước
+                        </button>
+                        <button onclick="nextReviewCard()" class="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-scholardark font-extrabold rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2 text-xs">
+                            Thẻ tiếp <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <div id="settings-modal" class="fixed inset-0 bg-scholardark/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-scholarlight rounded-3xl w-full max-w-md shadow-2xl border border-slate-800 p-6 relative overflow-hidden">
+            <button onclick="closeSettingsModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-200 transition-all text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-key text-amber-500"></i>
+                <span>Cấu hình Gemini API Key</span>
+            </h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">
+                Dán khóa Gemini API Key cá nhân của bạn vào đây hoặc chỉnh sửa trực tiếp hằng số <code class="text-amber-400 font-bold">DIRECT_API_KEY</code> ở dòng 350 của file nguồn.
+            </p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Mô hình ưa thích</label>
+                    <select id="select-api-model" class="w-full px-4 py-3 bg-scholardark border border-slate-700/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 text-white">
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (Tiêu chuẩn cao cấp)</option>
+                        <option value="gemini-2.0-flash">Gemini 2.0 Flash (Tốc độ, Ổn định tối đa)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Gemini API Key</label>
+                    <input type="password" id="input-api-key" placeholder="Dán khóa API (AIzaSy...) tại đây..." 
+                           class="w-full px-4 py-3 bg-scholardark border border-slate-700/80 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 text-white">
+                </div>
+
+                <div class="bg-amber-500/5 p-4 rounded-xl border border-amber-500/20 space-y-2">
+                    <p class="text-[11px] text-amber-400 font-extrabold flex items-center animate-pulse">
+                        <i class="fa-solid fa-shield-halved mr-1"></i> Tự động phòng thủ quá tải (Rate-Limit Fallback):
+                    </p>
+                    <p class="text-[10px] text-slate-400 leading-relaxed">
+                        Ứng dụng tích hợp sẵn <strong>Local AI Heuristics Engine</strong> tự động kích hoạt bóc tách chữ ngay lập tức nếu API Key của bạn bị hết hạn hoặc quá tải từ máy chủ Google.
+                    </p>
+                </div>
+
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="closeSettingsModal()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-all">Đóng</button>
+                    <button type="button" onclick="saveAPISettings()" class="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-scholardark font-extrabold rounded-xl text-xs transition-all">Lưu cấu hình</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="clear-confirm-modal" class="fixed inset-0 bg-scholardark/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-scholarlight rounded-3xl w-full max-w-sm shadow-2xl border border-slate-800 p-6 text-center">
+            <div class="w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-base font-bold text-white mb-2">Xóa Sổ Tay Từ Vựng?</h3>
+            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Hành động này sẽ xóa toàn bộ từ vựng bạn đã lưu trong sổ tay học tập. Bạn có chắc chắn muốn xóa không?</p>
+            <div class="flex space-x-3">
+                <button onclick="closeClearModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition-all">Hủy bỏ</button>
+                <button onclick="confirmClearNotebook()" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-all">Đồng ý xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-6 right-6 px-4 py-3.5 bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center space-x-2.5 text-xs font-semibold">
+        <span id="toast-icon" class="text-amber-400"></span>
+        <span id="toast-message">Thông báo ở đây!</span>
+    </div>
+
+    <footer class="bg-scholarlight border-t border-slate-800/80 mt-12 py-6 text-center text-xs text-slate-500 font-medium">
+        <p>© 2026 Hán Tự - Phan Gia Bảo</p>
+    </footer>
+
+    <script>
+        // =========================================================================
+        // DÁN GEMINI API KEY CỦA BẠN VÀO ĐÂY ĐỂ CHẠY TRỰC TIẾP KHÔNG CẦN CÀI ĐẶT UI!
+        // =========================================================================
+        const DIRECT_API_KEY = "YOUR_API_KEY_HERE"; 
+        // =========================================================================
+
+        // Hộp cơ sở dữ liệu các ký tự thành phần phục vụ Local AI Engine khi mạng bận
+        const offlineCharDB = {
+            "開": { name: "Khai", detail: "mở ra, bắt đầu", radicals: [{char: "門", name: "Bộ Môn", detail: "Cánh cửa"}, {char: "𠫓", name: "Chữ cổ", detail: "Đứa trẻ lộn ngược đầu"}] },
+            "玩": { name: "Ngoạn", detail: "chơi đùa, nghịch ngợm", radicals: [{char: "王", name: "Bộ Vương/Ngọc", detail: "Viên ngọc quý, vua"}, {char: "元", name: "Chữ Nguyên", detail: "Đầu tiên, tiền tệ"}] },
+            "笑": { name: "Tiếu", detail: "tiếng cười, nụ cười", radicals: [{char: "竹", name: "Bộ Trúc", detail: "Cây tre, cây trúc xào xạc"}, {char: "夭", name: "Chữ Yêu", detail: "Tư thế uốn éo vui vẻ"}] },
+            "摸": { name: "Mạc/Mò", detail: "sờ mó, chạm, mò mẫm", radicals: [{char: "手", name: "Bộ Thủ (扌)", detail: "Bàn tay hành động"}, {char: "艹", name: "Bộ Thảo", detail: "Cỏ cây dại hoang vu"}, {char: "日", name: "Bộ Nhật", detail: "Mặt trời, ngày"}, {char: "大", name: "Bộ Đại", detail: "Người lớn, to lớn"}] },
+            "好": { name: "Hảo", detail: "tốt đẹp, tuyệt hảo", radicals: [{char: "女", name: "Bộ Nữ", detail: "Người mẹ, phụ nữ"}, {char: "子", name: "Bộ Tử", detail: "Đứa con bé bỏng"}] },
+            "乾": { name: "Can/Càn", detail: "khô ráo, sạch sẽ, bầu trời", radicals: [{char: "日", name: "Bộ Nhật", detail: "Mặt trời rực nắng"}, {char: "十", name: "Bộ Thập (十)", detail: "Tia nắng bao trùm muôn nơi"}, {char: "乚", name: "Bộ Ất", detail: "Hơi nước bốc hơi"}] },
+            "髒": { name: "Tạng", detail: "bẩn thỉu, dơ dáy, ô uế", radicals: [{char: "骨", name: "Bộ Cốt", detail: "Xương cốt cơ thể"}, {char: "艹", name: "Bộ Thảo", detail: "Cỏ dại hoang vu"}, {char: "死", name: "Chữ Tử", detail: "Tử thi, cái chết"}] },
+            "掃": { name: "Tảo", detail: "quét dọn, làm sạch", radicals: [{char: "手", name: "Bộ Thủ (扌)", detail: "Bàn tay cầm chổi"}, {char: "帚", name: "Chữ Trửu", detail: "Cái chổi bện cỏ tranh"}] },
+            "地": { name: "Địa", detail: "mặt đất, nền nhà, vị trí", radicals: [{char: "土", name: "Bộ Thổ", detail: "Đất cát đai"}, {char: "也", name: "Chữ Dã", detail: "Cũng là, trải dài bao la"}] },
+            "客": { name: "Khách", detail: "khách khứa, lịch sự", radicals: [{char: "宀", name: "Bộ Miên", detail: "Mái nhà ấm cúng"}, {char: "夂", name: "Bộ Truy", detail: "Bước chân từ xa rảo bước"}, {char: "口", name: "Bộ Khẩu", detail: "Cái miệng cười nói chào hỏi"}] },
+            "人": { name: "Nhân", detail: "con người, nhân vật", radicals: [{char: "人", name: "Bộ Nhân", detail: "Con người đang vững bước đi"}] },
+            "急": { name: "Cấp", detail: "vội vã, nôn nóng, khẩn cấp", radicals: [{char: "𠂊", name: "Chữ Đao cách điệu", detail: "Tay tóm lấy giật lấy"}, {char: "彐", name: "Bộ Kệ", detail: "Đôi chân cuống cuồng chạy"}, {char: "心", name: "Bộ Tâm", detail: "Trái tim đập liên hồi"}] },
+            "危": { name: "Nguy", detail: "nguy hiểm, cheo leo", radicals: [{char: "厂", name: "Bộ Hán", detail: "Vách đá dốc đứng"}, {char: "卩", name: "Bộ Tiết", detail: "Người khom lưng sợ hãi"}] },
+            "險": { name: "Hiểm", detail: "hiểm trở, gian nan, ác độc", radicals: [{char: "反", name: "Bộ Phụ (阝)", detail: "Ngọn núi đất dốc cao đứng"}, {char: "僉", name: "Chữ Thiêm", detail: "Tất cả mọi người bám lấy nhau"}] },
+            "碗": { name: "Oản", detail: "cái bát, cái chén", radicals: [{char: "石", name: "Bộ Thạch", detail: "Đá nung gốm sứ"}, {char: "宀", name: "Bộ Miên", detail: "Mái nhà"}, {char: "夕", name: "Bộ Tịch", detail: "Buổi tối cơm ấm cúng"}] },
+            "筷": { name: "Khoái", detail: "đôi đũa gắp thức ăn", radicals: [{char: "竹", name: "Bộ Trúc", detail: "Cây tre vót đũa"}, {char: "忄", name: "Bộ Tâm đứng", detail: "Trái tim nhanh nhẹn"}] },
+            "刀": { name: "Đao", detail: "con dao cắt, vũ khí", radicals: [{char: "刀", name: "Bộ Đao", detail: "Con dao sắc bén"}] },
+            "叉": { name: "Xoa", detail: "cái dĩa, cái nĩa, dấu chéo", radicals: [{char: "又", name: "Bộ Hựu", detail: "Bàn tay đang xòe ra"}, {char: "丶", name: "Bộ Chủ", detail: "Miếng thức ăn bị găm chặt"}] },
+            "湯": { name: "Thang", detail: "nước nóng, nước canh súp", radicals: [{char: "氵", name: "Bộ Thủy", detail: "Nước nóng bốc hơi"}, {char: "日", name: "Bộ Nhật", detail: "Mặt mặt trời tỏa nhiệt"}] },
+            "匙": { name: "Thi", detail: "cái muỗng, thìa, chìa khóa", radicals: [{char: "是", name: "Chữ Thị", detail: "Đúng thế, chính là"}, {char: "匕", name: "Bộ Chỉ", detail: "Cái muỗng múc đất cát cổ"}] },
+            "應": { name: "Ứng", detail: "nên, phải, đáp ứng", radicals: [{char: "广", name: "Bộ Quảng", detail: "Mái dốc tòa nhà lớn"}, {char: "隹", name: "Bộ Truy", detail: "Chú chim nhỏ lông vũ"}, {char: "心", name: "Bộ Tâm", detail: "Trái tim trách nhiệm"}] },
+            "該": { name: "Cai", detail: "nên, cần phải, đến lượt", radicals: [{char: "言", name: "Bộ Ngôn", detail: "Lời nói chuẩn chỉ"}, {char: "亥", name: "Chữ Hợi", detail: "Địa chi thứ mười hai"}] },
+            "暑": { name: "Thử", detail: "nắng nóng oi bức, mùa hè", radicals: [{char: "日", name: "Bộ Nhật", detail: "Mặt trời chiếu gắt"}, {char: "耂", name: "Bộ Lão cách điệu", detail: "Người già bên dưới"}] },
+            "假": { name: "Giả", detail: "kỳ nghỉ, ngày nghỉ, giả vờ", radicals: [{char: "亻", name: "Bộ Nhân đứng", detail: "Con người làm việc"}, {char: "叚", name: "Chữ Giả", detail: "Mượn khoảng trống nghỉ ngơi"}] },
+            "才": { name: "Tài", detail: "mới, chỉ mới, tài hoa", radicals: [{char: "一", name: "Bộ Nhất", detail: "Mặt đất phẳng lặng"}, {char: "丨", name: "Bộ Sổ", detail: "Mầm cây vừa hé rễ nhú"}] },
+            "亂": { name: "Loạn", detail: "bừa bãi, lộn xộn, lung tung", radicals: [{char: "爪", name: "Bộ Trảo", detail: "Bàn tay kéo từ trên xuống"}, {char: "又", name: "Bộ Hựu", detail: "Bàn tay kéo từ dưới lên"}, {char: "乚", name: "Bộ Ất", detail: "Cái móc rạch tơ rối"}] },
+            "念": { name: "Niệm", detail: "học tập, nhớ nhung, đọc nhẩm", radicals: [{char: "今", name: "Chữ Kim", detail: "Hiện tại, ngay bây giờ"}, {char: "心", name: "Bộ Tâm", detail: "Trái tim tập trung"}] },
+            "書": { name: "Thư", detail: "quyển sách, chữ viết", radicals: [{char: "聿", name: "Bộ Duật", detail: "Tay cầm cây bút lông viết sách"}, {char: "曰", name: "Bộ Viết", detail: "Lời răn dạy của người xưa"}] },
+            "剛": { name: "Cương", detail: "cứng rắn, vừa mới, vừa hay", radicals: [{char: "冈", name: "Chữ Cương cổ", detail: "Khung sắt, sườn núi"}, {char: "刂", name: "Bộ Đao", detail: "Con dao sắc bén"}] },
+            "像": { name: "Tượng", detail: "hình tượng, giống như", radicals: [{char: "亻", name: "Bộ Nhân đứng", detail: "Con người"}, {char: "象", name: "Chữ Tượng", detail: "Con voi to lớn"}] },
+            "害": { name: "Hại", detail: "tác hại, làm hại, lo sợ", radicals: [{char: "宀", name: "Bộ Miên", detail: "Mái nhà"}, {char: "丰", name: "Chữ Phong", detail: "Xung đột"}, {char: "口", name: "Bộ Khẩu", detail: "Cái miệng phát ngôn"}] },
+            "羞": { name: "Tu", detail: "xấu hổ, e thẹn", radicals: [{char: "𦍌", name: "Bộ Dương cách điệu", detail: "Con dê ngoan ngoãn"}, {char: "丑", name: "Chữ Sửu", detail: "Bàn tay gãi đầu e thẹn"}] },
+            "熟": { name: "Thục", detail: "chín, quen thuộc, thành thạo", radicals: [{char: "享", name: "Chữ Hưởng", detail: "Hưởng thụ, cúng bái"}, {char: "灬", name: "Bộ Hỏa dưới", detail: "Lửa đun nấu"}] },
+            "丟": { name: "Đâu", detail: "ném đi, đánh mất", radicals: [{char: "丿", name: "Nét phẩy", detail: "Nét phẩy xéo"}, {char: "去", name: "Chứ Khứ", detail: "Đi mất, rời đi"}] },
+            "着": { name: "Trứ", detail: "chạm vào, biểu thị trạng thái", radicals: [{char: "𦍌", name: "Bộ Dương cách điệu", detail: "Con dê ngoan ngoãn"}, {char: "目", name: "Bộ Mục", detail: "Con mắt quan sát"}] },
+            "打": { name: "Đả", detail: "đánh, gõ, đập", radicals: [{char: "扌", name: "Bộ Thủ", detail: "Bàn tay hành động"}, {char: "丁", name: "Chữ Đinh", detail: "Cái đinh"}] }
+        };
+
+        const demoDictionary = {
+            "應該": {
+                hz: "應該", py: "yīnggāi", hv: "Ưng Cai", mean: "Nên, cần phải, chắc hẳn là",
+                story: "Dưới mái nhà rộng lớn (广), dâng trọn con tim (心) nuôi nấng chú chim (隹) nhỏ để răn dạy trách nhiệm (應). Khi phát ngôn ra lời nói (言) nghiêm túc đúng theo quy luật thời gian chi Hợi (亥), biểu thị lẽ đương nhiên phải thế (該).",
+                tip: "Học cách bao dung và chịu trách nhiệm dưới một mái nhà.",
+                radicals: [
+                    { char: "广", name: "Bộ Quảng", detail: "Mái nhà dốc lớn, che chắn." },
+                    { char: "隹", name: "Bộ Truy", detail: "Con chim nhỏ đuôi ngắn hoang dã." },
+                    { char: "心", name: "Bộ Tâm", detail: "Trái tim, tâm trí, suy tưởng." },
+                    { char: "言", name: "Bộ Ngôn", detail: "Lời nói, phát ngôn truyền miệng." },
+                    { char: "亥", name: "Chữ Hợi", detail: "Chi Hợi, luật lệ quy luật thời gian." }
+                ],
+                examples: [
+                    { cn: "你應該早點睡確。", py: "Nǐ yīnggāi zǎodiǎn shuìjiào.", vn: "Cậu nên đi ngủ sớm một chút." }
+                ],
+                stroke_instructions: [
+                    "應: Nét chấm trung tâm, viết bộ Truy bên trong rồi đặt bộ Tâm dưới đáy.",
+                    "該: Bộ Ngôn bên trái trước, sau viết chi Hợi bên phải."
+                ],
+                visual_scene: {
+                    background_color: "bg-amber-950/20 border-amber-900/30",
+                    elements: [
+                        { emoji_or_symbol: "🏠", label: "Mái nhà (广)", animation_class: "animate-pulse" },
+                        { emoji_or_symbol: "🐦", label: "Chim nhỏ (隹)", animation_class: "animate-bounce" },
+                        { emoji_or_symbol: "❤️", label: "Trái tim (心)", animation_class: "animate-ping" }
+                    ]
+                },
+                srs: "new"
+            },
+            "危險": {
+                hz: "危險", py: "wēixiǎn", hv: "Nguy Hiểm", mean: "Nguy hiểm, khốn đốn hiểm nguy",
+                story: "Một người co rúm sợ hãi (卩) đứng mấp mé trên vách đá (厂) dốc dựng đứng gập ghềnh (危). Phía sau là ngọn núi đá gồ ghề (阝) hiểm trở nơi tất cả mọi người (義) phải hò hét bám sát lấy nhau vượt qua (險).",
+                tip: "Hình dung con người quỳ sụp dưới bờ vực thẳm.",
+                radicals: [
+                    { char: "厂", name: "Bộ Hán", detail: "Vách núi dốc đứng cheo leo." },
+                    { char: "卩", name: "Bộ Tiết", detail: "Người khom lưng quỳ rạp sợ hãi." },
+                    { char: "阝", name: "Bộ Phụ", detail: "Gò đất dốc, núi đá cao đứng." }
+                ],
+                examples: [
+                    { cn: "這裡很危險，快走！", py: "Zhèlǐ hěn wēixiǎn, kuài zǒu!", vn: "Nơi này nguy hiểm lắm, mau đi thôi!" }
+                ],
+                stroke_instructions: [
+                    "危: Viết bộ Đao biến thể ở trên trước, sau viết vách núi rồi đặt bộ Tiết dưới cùng.",
+                    "險: Bộ Phụ bên trái viết trước, sau viết chữ Thiêm bên phải."
+                ],
+                visual_scene: {
+                    background_color: "bg-red-950/20 border-red-900/30",
+                    elements: [
+                        { emoji_or_symbol: "🏔️", label: "Vách đá (厂)", animation_class: "animate-pulse" },
+                        { emoji_or_symbol: "🧎", label: "Người quỳ (卩)", animation_class: "animate-bounce" },
+                        { emoji_or_symbol: "⚠️", label: "Khẩn cấp (險)", animation_class: "animate-ping" }
+                    ]
+                },
+                srs: "learning"
+            },
+            "剛好": {
+                hz: "剛好", py: "gānghǎo", hv: "Cương Hảo", mean: "Vừa vặn, vừa hay, đúng lúc",
+                story: "Lên đỉnh núi (山) biên thùy (冂) cầm đao (刂) gác vững chãi (剛). Người mẹ (女) ẵm đứa con (子) mang đồ ăn đến vừa đúng lúc (好).",
+                tip: "Món quà tuyệt vời vừa đúng lúc trên đỉnh núi dốc.",
+                radicals: [
+                    { char: "冂", name: "Bộ Quynh", detail: "Vùng biên giới bao quanh." },
+                    { char: "山", name: "Bộ Sơn", detail: "Ngọn núi vững chãi." },
+                    { char: "刂", name: "Bộ Đao", detail: "Con dao sắc bén." },
+                    { char: "女", name: "Bộ Nữ", detail: "Người mẹ, người phụ nữ." },
+                    { char: "子", name: "Bộ Tử", detail: "Đứa con." }
+                ],
+                examples: [
+                    { cn: "這雙鞋子我穿剛好。", py: "Zhè shuāng xiézi wǒ chuān gānghǎo.", vn: "Đôi giày này tôi đi vừa vặn." }
+                ],
+                stroke_instructions: [
+                    "剛: Viết bộ Sơn nằm gọn trong bộ Quynh bên trái trước, sau viết bộ Đao bên phải.",
+                    "好: Bộ Nữ bên trái trước, bộ Tử bên phải sau."
+                ],
+                visual_scene: {
+                    background_color: "bg-emerald-950/20 border-emerald-900/30",
+                    elements: [
+                        { emoji_or_symbol: "⚔️", label: "Gác đỉnh biên (剛)", animation_class: "animate-pulse" },
+                        { emoji_or_symbol: "👩", label: "Mẹ (女)", animation_class: "animate-bounce" },
+                        { emoji_or_symbol: "👶", label: "Con (子)", animation_class: "animate-pulse" }
+                    ]
+                },
+                srs: "mastered"
+            }
+        };
+
+        let currentNotebook = [];
+        let activeTab = "explorer";
+        let activeFilter = "all";
+        let currentActiveWord = null;
+
+        let canvas, ctx;
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let brushSize = 5;
+
+        window.onload = function() {
+            initCanvas();
+            loadSettings();
+            loadNotebook();
+            
+            if (currentNotebook.length > 0) {
+                displayWordDetails(currentNotebook[0]);
+            } else {
+                displayWordDetails(demoDictionary["應該"]);
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+        };
+
+        function initCanvas() {
+            canvas = document.getElementById('writing-pad');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            const rect = canvas.parentNode.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.width * 0.75;
+            clearCanvas();
+        }
+
+        function clearCanvas() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Vẽ chữ Hán mờ làm nét mẫu ở dưới để người dùng viết đè lên
+            if (currentActiveWord && currentActiveWord.hz) {
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const charCount = currentActiveWord.hz.length;
+                let fontSize;
+                if (charCount === 1) {
+                    fontSize = Math.min(canvas.width, canvas.height) * 0.65;
+                } else {
+                    fontSize = Math.min(canvas.width / charCount, canvas.height) * 0.75;
+                }
+                
+                ctx.font = `900 ${fontSize}px "Noto Serif TC", serif`;
+                ctx.fillStyle = 'rgba(197, 168, 128, 0.08)'; // Màu vàng cát mờ nhẹ 8%
+                ctx.fillText(currentActiveWord.hz, canvas.width / 2, canvas.height / 2);
+                ctx.restore();
+            }
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getMousePos(e);
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (canvas.width / rect.width),
+                y: (e.clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        function draw(e) {
+            if (!isDrawing || !ctx) return;
+            const pos = getMousePos(e);
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            
+            const speed = Math.hypot(pos.x - lastX, pos.y - lastY);
+            brushSize = Math.max(2, Math.min(10, 12 - speed * 0.5));
+            
+            ctx.strokeStyle = '#C5A880'; 
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("mousedown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("mousemove", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function sanitizeApiKey(key) {
+            if (!key) return "";
+            let clean = key.trim();
+            if ((clean.startsWith('"') && clean.endsWith('"')) || 
+                (clean.startsWith("'") && clean.endsWith("'")) ||
+                (clean.startsWith("`") && clean.endsWith("`"))) {
+                clean = clean.slice(1, -1).trim();
+            }
+            return clean;
+        }
+
+        function getActiveApiKey() {
+            if (DIRECT_API_KEY && DIRECT_API_KEY !== "YOUR_API_KEY_HERE" && DIRECT_API_KEY.trim() !== "") {
+                return sanitizeApiKey(DIRECT_API_KEY);
+            }
+            return sanitizeApiKey(localStorage.getItem('gemini_custom_key'));
+        }
+
+        function getPreferredModel() {
+            return localStorage.getItem('gemini_preferred_model') || 'gemini-2.5-flash';
+        }
+
+        function loadSettings() {
+            const activeKey = getActiveApiKey();
+            const preferredModel = getPreferredModel();
+            
+            const input = document.getElementById('input-api-key');
+            if (input) {
+                input.value = localStorage.getItem('gemini_custom_key') || '';
+            }
+
+            const modelSelect = document.getElementById('select-api-model');
+            if (modelSelect) {
+                modelSelect.value = preferredModel;
+            }
+            
+            const badge = document.getElementById('api-status-badge');
+            const bannerTitle = document.getElementById('api-banner-title');
+            const bannerDesc = document.getElementById('api-banner-desc');
+
+            if (activeKey) {
+                if (activeKey.startsWith("sk-")) {
+                    if (badge) badge.className = "absolute top-1 right-1 w-3 h-3 rounded-full bg-yellow-500 border-2 border-scholardark";
+                    if (bannerTitle) bannerTitle.textContent = "Cảnh báo định dạng!";
+                    if (bannerDesc) bannerDesc.textContent = "API Key dường như là của OpenAI, hãy đổi sang key Gemini bắt đầu bằng 'AIzaSy'.";
+                } else {
+                    if (badge) badge.className = "absolute top-1 right-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-scholardark";
+                    if (bannerTitle) bannerTitle.textContent = `Sẵn sàng với ${preferredModel}`;
+                    const maskedKey = activeKey.substring(0, 6) + "..." + activeKey.substring(activeKey.length - 4);
+                    if (bannerDesc) bannerDesc.textContent = `Đã kết nối API Key (${maskedKey}). Động cơ bảo vệ quá tải đã được kích hoạt.`;
+                }
+            } else {
+                if (badge) badge.className = "absolute top-1 right-1 w-3 h-3 rounded-full bg-red-500 border-2 border-scholardark";
+                if (bannerTitle) bannerTitle.textContent = "Chưa cấu hình API Key";
+                if (bannerDesc) bannerDesc.textContent = "Mở file nguồn dán khóa vào dòng 350 hoặc Click cấu hình để dán thủ công.";
+            }
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveAPISettings() {
+            const apiKey = document.getElementById('input-api-key').value.trim();
+            const model = document.getElementById('select-api-model').value;
+            
+            localStorage.setItem('gemini_preferred_model', model);
+
+            if (apiKey) {
+                const sanitized = sanitizeApiKey(apiKey);
+                localStorage.setItem('gemini_custom_key', sanitized);
+                showToast("Đã lưu cấu hình API thành công!", "fa-circle-check");
+            } else {
+                localStorage.removeItem('gemini_custom_key');
+                showToast("Đã gỡ API Key thủ công.", "fa-circle-info");
+            }
+            closeSettingsModal();
+            loadSettings();
+        }
+
+        function loadNotebook() {
+            currentNotebook = JSON.parse(localStorage.getItem('scholar_notebook') || '[]');
+            if (currentNotebook.length === 0) {
+                currentNotebook = Object.values(demoDictionary);
+                localStorage.setItem('scholar_notebook', JSON.stringify(currentNotebook));
+            }
+            renderNotebook();
+        }
+
+        function renderNotebook() {
+            const container = document.getElementById('notebook-list');
+            const countLabel = document.getElementById('notebook-count');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let filtered = currentNotebook;
+            if (activeFilter !== 'all') {
+                filtered = currentNotebook.filter(w => w.srs === activeFilter);
+            }
+
+            if (countLabel) countLabel.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 text-xs">
+                        <i class="fa-regular fa-folder-open mb-2 text-lg block"></i> Trống (Không tìm thấy từ tương thích)
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(w => {
+                const isSelected = currentActiveWord && currentActiveWord.hz === w.hz;
+                let badgeClass = "bg-slate-800 text-slate-400";
+                let badgeText = "Mới";
+                if (w.srs === 'learning') {
+                    badgeClass = "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                    badgeText = "Đang ôn";
+                } else if (w.srs === 'mastered') {
+                    badgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                    badgeText = "Đã thuộc";
+                }
+
+                const item = document.createElement('div');
+                item.className = `p-3 rounded-2xl cursor-pointer transition-all duration-200 border flex items-center justify-between ${
+                    isSelected 
+                    ? 'bg-amber-500/10 border-amber-500/40 text-white shadow-lg glow-gold' 
+                    : 'bg-scholardark border-slate-800/80 text-slate-300 hover:bg-slate-800'
+                }`;
+                item.onclick = () => displayWordDetails(w);
+
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3 text-left">
+                        <span class="text-2xl font-serif font-black ${isSelected ? 'text-amber-400' : 'text-white'}">${w.hz}</span>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-bold text-amber-400 font-mono">${w.py}${w.hv ? ` <span class="text-[10px] text-amber-200/80 font-sans font-semibold">(${w.hv})</span>` : ''}</span>
+                            <span class="text-[10px] truncate max-w-[150px] text-slate-400">${w.mean}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md ${badgeClass}">${badgeText}</span>
+                        <button onclick="event.stopPropagation(); deleteWord('${w.hz}')" class="text-slate-500 hover:text-red-400 transition-all text-xs p-1">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function filterNotebook(filter) {
+            activeFilter = filter;
+            ['all', 'new', 'learning', 'mastered'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (!btn) return;
+                if (f === filter) {
+                    btn.className = "flex-1 py-1 px-2 text-[10px] font-bold rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 transition-all";
+                } else {
+                    btn.className = "flex-1 py-1 px-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 transition-all";
+                }
+            });
+            renderNotebook();
+        }
+
+        function updateWordSRS() {
+            if (!currentActiveWord) return;
+            const status = document.getElementById('dt-srs-status').value;
+            currentActiveWord.srs = status;
+            
+            currentNotebook = currentNotebook.map(w => {
+                if (w.hz === currentActiveWord.hz) {
+                    w.srs = status;
+                }
+                return w;
+            });
+            localStorage.setItem('scholar_notebook', JSON.stringify(currentNotebook));
+            renderNotebook();
+            showToast("Đã cập nhật phân phối ôn luyện SRS!", "fa-circle-check");
+        }
+
+        function deleteWord(hz) {
+            currentNotebook = currentNotebook.filter(w => w.hz !== hz);
+            localStorage.setItem('scholar_notebook', JSON.stringify(currentNotebook));
+            renderNotebook();
+            
+            if (currentActiveWord && currentActiveWord.hz === hz) {
+                if (currentNotebook.length > 0) {
+                    displayWordDetails(currentNotebook[0]);
+                } else {
+                    currentActiveWord = null;
+                    document.getElementById('view-detail').classList.add('hidden');
+                    document.getElementById('view-empty').classList.remove('hidden');
+                }
+            }
+            showToast("Đã gỡ từ vựng ra khỏi sổ tay", "fa-trash-can");
+        }
+
+        function triggerClearModal() {
+            document.getElementById('clear-confirm-modal').classList.remove('hidden');
+        }
+
+        function closeClearModal() {
+            document.getElementById('clear-confirm-modal').classList.add('hidden');
+        }
+
+        function confirmClearNotebook() {
+            currentNotebook = [];
+            localStorage.setItem('scholar_notebook', JSON.stringify([]));
+            renderNotebook();
+            currentActiveWord = null;
+            document.getElementById('view-detail').classList.add('hidden');
+            document.getElementById('view-empty').classList.remove('hidden');
+            closeClearModal();
+            showToast("Lịch sử học đã được dọn sạch hoàn toàn", "fa-trash");
+        }
+
+        function getHanViet(word) {
+            if (word.hv) return word.hv;
+            if (!word.hz) return "";
+            let res = [];
+            for (let char of word.hz) {
+                if (offlineCharDB[char]) {
+                    res.push(offlineCharDB[char].name.split('/')[0]);
+                } else {
+                    res.push(char);
+                }
+            }
+            return res.join(' ');
+        }
+
+        function executeLocalAIEngine(input) {
+            showToast("Mạng bận! Đã kích hoạt Chế Độ Thư Họa Ngoại Tuyến.", "fa-circle-exclamation");
+            
+            let radicalsExtracted = [];
+            for (let char of input) {
+                if (offlineCharDB[char]) {
+                    radicalsExtracted = radicalsExtracted.concat(offlineCharDB[char].radicals);
+                }
+            }
+
+            if (radicalsExtracted.length === 0) {
+                radicalsExtracted = [
+                    { char: "人", name: "Bộ Nhân", detail: "Chỉ hoạt động của con người hoặc đối tượng." },
+                    { char: "口", name: "Bộ Khẩu", detail: "Mồm, miệng cười nói, giao tiếp phát ngôn." }
+                ];
+            }
+
+            // Loại bỏ các bộ thủ trùng lặp
+            radicalsExtracted = radicalsExtracted.filter((value, index, self) =>
+                index === self.findIndex((t) => t.char === value.char)
+            );
+
+            // Tự động tạo kịch bản Pinyin/Dịch nghĩa dã chiến
+            let mockPinyin = "hànzì";
+            let mockMean = "Mở rộng tri thức về từ Hán tự";
+            let mockHv = "";
+            
+            if (input === "開玩笑") { mockPinyin = "kāi wánxiào"; mockMean = "Đùa giỡn, nói đùa, trêu chọc"; mockHv = "Khai Ngoạn Tiếu"; }
+            else if (input === "摸") { mockPinyin = "mō"; mockMean = "Sờ mó, chạm vuốt, mò mẫm"; mockHv = "Mạc"; }
+            else if (input === "好像") { mockPinyin = "hǎoxiàng"; mockMean = "Hình như, dường như, giống như"; mockHv = "Hảo Tượng"; }
+            else if (input === "害羞") { mockPinyin = "hàixiū"; mockMean = "Ngại ngùng, thẹn thùng, xấu hổ"; mockHv = "Hại Tu"; }
+            else if (input === "熟") { mockPinyin = "shú / shóu"; mockMean = "Nấu chín, quen thuộc, thành thạo"; mockHv = "Thục"; }
+            else if (input === "碗筷") { mockPinyin = "wǎnkuài"; mockMean = "Bát đũa, chén đũa ăn cơm"; mockHv = "Oản Khoái"; }
+            else if (input === "刀叉") { mockPinyin = "dāochā"; mockMean = "Dao nĩa, dao và dĩa ăn đồ Tây"; mockHv = "Đao Xoa"; }
+            else if (input === "湯匙") { mockPinyin = "tāngchí"; mockMean = "Cái muỗng, cái thìa múc canh"; mockHv = "Thang Thi"; }
+            else if (input === "客人") { mockPinyin = "kèrén"; mockMean = "Khách khứa, khách hàng ghé chơi"; mockHv = "Khách Nhân"; }
+            else if (input === "乾") { mockPinyin = "gān / qián"; mockMean = "Khô ráo, sạch sẽ, cạn ly, quẻ Càn"; mockHv = "Can / Càn"; }
+            else if (input === "丟") { mockPinyin = "diū"; mockMean = "Ném vứt, quăng, đánh mất đồ đạc"; mockHv = "Đâu"; }
+            else if (input === "着急") { mockPinyin = "zhāojí"; mockMean = "Sốt ruột, vội vã, lo lắng cuống cuồng"; mockHv = "Trứ Cấp"; }
+            else if (input === "髒") { mockPinyin = "zāng"; mockMean = "Bẩn thỉu, dơ dáy, ô uế"; mockHv = "Tạng"; }
+            else if (input === "打掃") { mockPinyin = "dǎsǎo"; mockMean = "Quét dọn, làm vệ sinh nhà cửa"; mockHv = "Đả Tảo"; }
+            else if (input === "掃地") { mockPinyin = "sǎodì"; mockMean = "Quét nhà, quét sân nền đất"; mockHv = "Tảo Địa"; }
+            else if (input === "暑假") { mockPinyin = "shǔjià"; mockMean = "Kỳ nghỉ hè của học sinh sinh viên"; mockHv = "Thử Giả"; }
+            else if (input === "才") { mockPinyin = "cái"; mockMean = "Mới, chỉ mới, tài năng"; mockHv = "Tài"; }
+            else if (input === "亂") { mockPinyin = "luàn"; mockMean = "Bừa bãi, lộn xộn, nói bậy lung tung"; mockHv = "Loạn"; }
+            else if (input === "念書") { mockPinyin = "niànshū"; mockMean = "Học hành, học bài, đọc sách"; mockHv = "Niệm Thư"; }
+
+            if (!mockHv) {
+                let hvArr = [];
+                for (let char of input) {
+                    if (offlineCharDB[char]) {
+                        hvArr.push(offlineCharDB[char].name.split('/')[0]);
+                    } else {
+                        hvArr.push(char);
+                    }
+                }
+                mockHv = hvArr.join(' ');
+            }
+
+            const localGeneratedWord = {
+                hz: input,
+                py: mockPinyin,
+                hv: mockHv,
+                mean: mockMean,
+                story: `Một câu chuyện liên tưởng tự nhiên được dệt ghép từ các bộ thủ chính (${radicalsExtracted.map(r => r.char).join(', ')}). Nhìn thấy bộ thủ kết hợp hài hòa giúp khắc họa trực giác vững chắc của từ vào trí não.`,
+                tip: "Luyện viết nhiều lần kết hợp với bảng vẽ cảm ứng phía bên phải để quen tay.",
+                radicals: radicalsExtracted,
+                examples: [
+                    { cn: `你要認真學習 "${input}" 🚀`, py: `Nǐ yào rènzhēn xuéxí "${mockPinyin}".`, vn: `Cậu cần phải chăm chỉ học từ mới này.` }
+                ],
+                stroke_instructions: [
+                    "Bắt đầu vẽ từ nét phẩy trái qua phải.",
+                    "Chú ý viết bộ thủ bao phủ ở trên trước, các cấu trúc dưới đáy sau."
+                ],
+                visual_scene: {
+                    background_color: "bg-slate-900/60 border-slate-800",
+                    elements: [
+                        { emoji_or_symbol: "✍️", label: "Tập viết", animation_class: "animate-pulse" },
+                        { emoji_or_symbol: "💡", label: "Ghi nhớ", animation_class: "animate-bounce" },
+                        { emoji_or_symbol: "📖", label: "Mở sách", animation_class: "animate-pulse" }
+                    ]
+                },
+                srs: "new"
+            };
+
+            saveToNotebook(localGeneratedWord);
+            displayWordDetails(localGeneratedWord);
+            document.getElementById('ai-input').value = '';
+        }
+
+        async function executeAIEngine() {
+            const input = document.getElementById('ai-input').value.trim();
+            if (!input) {
+                showToast("Bạn chưa nhập chữ Hán hoặc cụm từ!", "fa-circle-exclamation");
+                return;
+            }
+
+            const rawApiKey = getActiveApiKey();
+            const apiKey = sanitizeApiKey(rawApiKey);
+
+            // Chế độ nạp dữ liệu nhanh nếu từ thuộc demo dictionary và chưa có API Key
+            if ((!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey === "") && demoDictionary[input]) {
+                const word = demoDictionary[input];
+                saveToNotebook(word);
+                displayWordDetails(word);
+                document.getElementById('ai-input').value = '';
+                return;
+            }
+
+            if (!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey === "") {
+                // Nếu không có API Key, kích hoạt luôn bộ giải mã Local AI Heuristics
+                executeLocalAIEngine(input);
+                return;
+            }
+
+            document.getElementById('view-empty').classList.add('hidden');
+            document.getElementById('view-detail').classList.add('hidden');
+            document.getElementById('view-loading').classList.remove('hidden');
+            document.getElementById('loading-title').textContent = `Gemini AI đang bóc tách chữ "${input}"...`;
+            document.getElementById('loading-desc').textContent = `Đang kết nối đến máy chủ Google AI để phân tích thông minh.`;
+
+            // Thử nghiệm gọi kép: Thử nghiệm Gemini 2.5 Flash trước, nếu lỗi thì fallback sang Gemini 2.0
+            const preferredModel = getPreferredModel();
+            const fallbackModel = preferredModel === 'gemini-2.5-flash' ? 'gemini-2.0-flash' : 'gemini-2.5-flash';
+
+            try {
+                await callGeminiAPI(input, apiKey, preferredModel);
+            } catch (err) {
+                console.warn(`Mô hình chính ${preferredModel} gặp sự cố, tự động chuyển hướng sang mô hình bảo vệ ${fallbackModel}...`, err);
+                try {
+                    showToast(`Quá tải! Đang thử nghiệm cổng phụ ${fallbackModel}...`, "fa-solid fa-arrows-spin animate-spin");
+                    await callGeminiAPI(input, apiKey, fallbackModel);
+                } catch (fallbackErr) {
+                    console.error("Cả hai cổng máy chủ đều bận. Tự động chuyển đổi sang Local AI Heuristics Engine...", fallbackErr);
+                    executeLocalAIEngine(input);
+                }
+            } finally {
+                document.getElementById('view-loading').classList.add('hidden');
+            }
+        }
+
+        async function callGeminiAPI(input, apiKey, modelName) {
+            const prompt = `Phân tích sâu sắc chữ/từ Hán tự sau để một học giả tiếng Việt dễ ghi nhớ và học tập: '${input}'. Bạn bắt buộc phải trả về đúng cấu trúc JSON để xử lý trực tiếp. Hãy nhớ cung cấp phiên âm Hán Việt chính xác nhất của từ/cụm từ đó vào trường 'hv' (ví dụ: '應該' -> 'Ưng Cai', '危險' -> 'Nguy Hiểm'). Hãy thiết lập kịch bản visual_scene gồm các bộ thủ chính biểu thị bằng emoji sinh động nhất.`;
+
+            const schema = {
+                type: "object",
+                properties: {
+                    hz: { type: "string" },
+                    py: { type: "string" },
+                    hv: { type: "string" },
+                    mean: { type: "string" },
+                    story: { type: "string" },
+                    tip: { type: "string" },
+                    radicals: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                char: { type: "string" },
+                                name: { type: "string" },
+                                detail: { type: "string" }
+                            },
+                            required: ["char", "name", "detail"]
+                        }
+                    },
+                    examples: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                cn: { type: "string" },
+                                py: { type: "string" },
+                                vn: { type: "string" }
+                            },
+                            required: ["cn", "py", "vn"]
+                        }
+                    },
+                    stroke_instructions: {
+                        type: "array",
+                        items: { type: "string" }
+                    },
+                    visual_scene: {
+                        type: "object",
+                        properties: {
+                            background_color: { type: "string" },
+                            elements: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        emoji_or_symbol: { type: "string" },
+                                        label: { type: "string" },
+                                        animation_class: { type: "string" }
+                                    },
+                                    required: ["emoji_or_symbol", "label", "animation_class"]
+                                }
+                            }
+                        },
+                        required: ["background_color", "elements"]
+                    }
+                },
+                required: ["hz", "py", "hv", "mean", "story", "tip", "radicals", "examples", "stroke_instructions", "visual_scene"]
+            };
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { 
+                        responseMimeType: "application/json",
+                        responseSchema: schema
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errJson = await response.json().catch(() => ({}));
+                const errMsg = errJson?.error?.message || response.statusText;
+                throw new Error(errMsg);
+            }
+
+            const data = await response.json();
+            const rawJson = data.candidates[0].content.parts[0].text;
+            const parsedWord = JSON.parse(rawJson.trim());
+            parsedWord.srs = "new"; 
+
+            saveToNotebook(parsedWord);
+            displayWordDetails(parsedWord);
+            document.getElementById('ai-input').value = '';
+            showToast("Phân tích AI hoàn thành xuất sắc!", "fa-circle-check");
+        }
+
+        function saveToNotebook(wordObj) {
+            currentNotebook = currentNotebook.filter(w => w.hz !== wordObj.hz);
+            currentNotebook.unshift(wordObj);
+            localStorage.setItem('scholar_notebook', JSON.stringify(currentNotebook));
+            renderNotebook();
+        }
+
+        function quickSelectWord(hz) {
+            const existing = currentNotebook.find(w => w.hz === hz);
+            if (existing) {
+                displayWordDetails(existing);
+            } else if (demoDictionary[hz]) {
+                saveToNotebook(demoDictionary[hz]);
+                displayWordDetails(demoDictionary[hz]);
+            } else {
+                document.getElementById('ai-input').value = hz;
+                executeAIEngine();
+            }
+        }
+
+        function displayWordDetails(word) {
+            currentActiveWord = word;
+            renderNotebook();
+            
+            // Tự động chuyển về tab Explorer để xem chi tiết từ khi click chọn
+            switchTab('explorer');
+
+            document.getElementById('view-empty').classList.add('hidden');
+            document.getElementById('view-loading').classList.add('hidden');
+            document.getElementById('view-detail').classList.remove('hidden');
+            
+            resizeCanvas();
+
+            document.getElementById('dt-hz').textContent = word.hz;
+            document.getElementById('dt-py').textContent = word.py;
+            
+            const dtHv = document.getElementById('dt-hv');
+            if (dtHv) {
+                dtHv.textContent = word.hv || getHanViet(word);
+            }
+            
+            document.getElementById('dt-mean').textContent = word.mean;
+            document.getElementById('dt-story').textContent = `“${word.story}”`;
+            document.getElementById('dt-tip').textContent = word.tip || "Sắp xếp nét bút từ trái qua phải, từ trên xuống dưới.";
+            document.getElementById('dt-srs-status').value = word.srs || "new";
+
+            if (!word.visual_scene) {
+                word.visual_scene = {
+                    background_color: "bg-slate-900/60 border-slate-800",
+                    elements: [
+                        { emoji_or_symbol: "✍️", label: "Học tập", animation_class: "animate-pulse" },
+                        { emoji_or_symbol: "💡", label: "Ghi nhớ", animation_class: "animate-bounce" }
+                    ]
+                };
+            }
+
+            const stage = document.getElementById('cinema-stage-content');
+            if (stage) {
+                stage.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-slate-400 text-xs mb-2">Chữ Hán hiện tại: <span class="text-amber-400 font-serif font-extrabold">${word.hz}</span></p>
+                        <span class="text-[11px] text-slate-500 italic block">Bấm nút "Xem Thư Họa" để chơi hoạt họa biến hình!</span>
+                    </div>
+                `;
+            }
+
+            const radContainer = document.getElementById('dt-radicals');
+            if (radContainer) {
+                radContainer.innerHTML = '';
+                if (word.radicals && word.radicals.length > 0) {
+                    word.radicals.forEach(r => {
+                        const box = document.createElement('div');
+                        box.className = "p-3.5 bg-scholardark border border-slate-800 rounded-xl flex items-center space-x-4 hover:border-amber-500/30 transition-all duration-200 group";
+                        box.innerHTML = `
+                            <div class="w-11 h-11 bg-slate-800/80 group-hover:bg-amber-500/10 group-hover:text-amber-400 border border-slate-700/80 group-hover:border-amber-500/30 rounded-xl flex items-center justify-center font-serif text-slate-200 text-2xl font-bold transition-all shrink-0">
+                                ${r.char}
+                            </div>
+                            <div class="text-left flex-grow">
+                                <h4 class="text-xs font-bold text-white leading-tight">${r.name}</h4>
+                                <p class="text-[10px] text-slate-400 mt-1 leading-snug">${r.detail}</p>
+                            </div>
+                        `;
+                        radContainer.appendChild(box);
+                    });
+                } else {
+                    radContainer.innerHTML = `<div class="text-slate-500 text-xs text-center py-4">Chữ nét đơn, không bóc tách thêm bộ thủ.</div>`;
+                }
+            }
+
+            const strokeBox = document.getElementById('dt-stroke-instructions');
+            if (strokeBox) {
+                strokeBox.innerHTML = '';
+                if (word.stroke_instructions && word.stroke_instructions.length > 0) {
+                    word.stroke_instructions.forEach((ins, i) => {
+                        const card = document.createElement('div');
+                        card.className = "p-2.5 bg-scholardark rounded-xl border border-slate-800/60 flex items-start gap-2";
+                        card.innerHTML = `
+                            <span class="w-5 h-5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">${i + 1}</span>
+                            <p class="leading-relaxed">${ins}</p>
+                        `;
+                        strokeBox.appendChild(card);
+                    });
+                } else {
+                    strokeBox.innerHTML = `<div class="col-span-2 text-slate-500 text-xs italic">Xem hướng dẫn viết trong bộ nét mẫu của chữ.</div>`;
+                }
+            }
+
+            const exContainer = document.getElementById('dt-examples');
+            if (exContainer) {
+                exContainer.innerHTML = '';
+                if (word.examples && word.examples.length > 0) {
+                    word.examples.forEach(ex => {
+                        const card = document.createElement('div');
+                        card.className = "p-4 bg-scholardark border-l-2 border-amber-500 rounded-r-2xl text-left space-y-1 group relative transition-all duration-200 hover:bg-slate-800/30";
+                        card.innerHTML = `
+                            <div class="flex justify-between items-start">
+                                <p class="font-serif text-white text-lg font-bold tracking-wide select-all">${ex.cn}</p>
+                                <button onclick="playTTSExample('${ex.cn}')" class="w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 hover:text-amber-400 border border-slate-700 transition-all opacity-0 group-hover:opacity-100" title="Phát âm câu ví dụ">
+                                    <i class="fa-solid fa-volume-high text-[10px]"></i>
+                                </button>
+                            </div>
+                            <p class="text-xs font-bold text-amber-400 font-mono">${ex.py}</p>
+                            <p class="text-xs text-slate-300 font-medium">${ex.vn}</p>
+                        `;
+                        exContainer.appendChild(card);
+                    });
+                } else {
+                    exContainer.innerHTML = `<div class="text-slate-500 text-xs italic">Chưa dựng mẫu câu cho chữ này.</div>`;
+                }
+            }
+        }
+
+        function playMnemonicCinema() {
+            if (!currentActiveWord) return;
+            const stage = document.getElementById('cinema-stage-content');
+            if (!stage) return;
+
+            createGoldParticlesEffect();
+
+            const radicals = currentActiveWord.radicals || [];
+            let radHTML = radicals.map(r => `
+                <div class="float-slow px-4 py-2 bg-slate-800 border border-slate-700 rounded-2xl flex flex-col items-center shadow-lg transition-all duration-500 select-none scale-90">
+                    <span class="text-2xl font-serif font-black text-amber-400">${r.char}</span>
+                    <span class="text-[9px] text-slate-400 mt-0.5">${r.name}</span>
+                </div>
+            `).join('');
+
+            stage.innerHTML = `
+                <div class="flex flex-col items-center justify-center w-full h-full text-center space-y-3">
+                    <span class="text-[9px] font-bold text-amber-500 uppercase tracking-widest animate-pulse">Giai đoạn 1: Bóc tách bộ thủ</span>
+                    <div class="flex flex-wrap justify-center gap-3 py-1">
+                        ${radHTML || '<span class="text-slate-500 text-xs">Không bóc tách thêm bộ thủ.</span>'}
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                stage.innerHTML = `
+                    <div class="flex flex-col items-center justify-center w-full h-full text-center space-y-2">
+                        <span class="text-[9px] font-bold text-amber-500 uppercase tracking-widest animate-pulse">Giai đoạn 2: Hội tụ & Loang mực thư pháp</span>
+                        <div class="text-5xl font-serif font-black text-white px-6 py-2 bg-scholardark border border-slate-700/80 rounded-2xl glow-gold ink-bleed-active select-none">
+                            ${currentActiveWord.hz}
+                        </div>
+                    </div>
+                `;
+            }, 1800);
+
+            setTimeout(() => {
+                const scene = currentActiveWord.visual_scene;
+                if (!scene) return;
+
+                const elementsHTML = scene.elements.map(e => `
+                    <div class="flex flex-col items-center justify-center p-2 bg-scholarlight border border-slate-800 rounded-2xl w-20 text-center shadow-sm">
+                        <span class="text-3xl ${e.animation_class}">${e.emoji_or_symbol}</span>
+                        <span class="text-[9px] text-slate-300 font-bold mt-1.5 truncate max-w-full">${e.label}</span>
+                    </div>
+                `).join('');
+
+                stage.innerHTML = `
+                    <div class="w-full p-3 rounded-2xl border transition-all duration-700 ${scene.background_color} flex flex-col items-center space-y-3">
+                        <span class="text-[9px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
+                            <i class="fa-solid fa-sparkles"></i> Giai đoạn 3: Hóa hình câu chuyện (Visual Collage)
+                        </span>
+                        <div class="flex items-center justify-center gap-3 py-2 w-full">
+                            ${elementsHTML}
+                        </div>
+                        <p class="text-[10px] text-slate-300 font-medium italic text-center max-w-md">
+                            “${currentActiveWord.tip || 'Liên tưởng sinh động giúp nhớ chữ lâu hơn.'}”
+                        </p>
+                    </div>
+                `;
+            }, 3800);
+        }
+
+        function createGoldParticlesEffect() {
+            const container = document.getElementById('gold-particles-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'gold-spark';
+                spark.style.left = `${Math.random() * 100}%`;
+                spark.style.top = `${Math.random() * 100}%`;
+                spark.style.animationDelay = `${Math.random() * 1.5}s`;
+                spark.style.scale = `${0.4 + Math.random() * 0.8}`;
+                container.appendChild(spark);
+            }
+        }
+
+        function playTTSMain() {
+            if (!currentActiveWord) return;
+            speakCore(currentActiveWord.hz);
+        }
+
+        function playTTSExample(text) {
+            speakCore(text);
+        }
+
+        function speakCore(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-TW'; 
+            utterance.rate = 0.8;
+            utterance.onerror = function() {
+                utterance.lang = 'zh-CN';
+                window.speechSynthesis.speak(utterance);
+            };
+            window.speechSynthesis.speak(utterance);
+        }
+
+        let reviewCards = [];
+        let currentReviewIdx = 0;
+
+        function switchTab(tab) {
+            activeTab = tab;
+            const btnExplorer = document.getElementById('btn-tab-explorer');
+            const btnReview = document.getElementById('btn-tab-review');
+            const explorerCont = document.getElementById('tab-explorer');
+            const reviewCont = document.getElementById('tab-review');
+            
+            const searchSidebar = document.getElementById('search-sidebar-container');
+            const notebookSidebar = document.getElementById('notebook-sidebar-container');
+
+            if (tab === 'explorer') {
+                if (btnExplorer) btnExplorer.className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-2";
+                if (btnReview) btnReview.className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200 flex items-center gap-2";
+                if (explorerCont) explorerCont.classList.remove('hidden');
+                if (reviewCont) reviewCont.classList.add('hidden');
+                
+                if (searchSidebar) searchSidebar.classList.remove('hidden');
+                if (notebookSidebar) notebookSidebar.classList.add('hidden');
+                
+                resizeCanvas();
+            } else {
+                if (btnReview) btnReview.className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-2";
+                if (btnExplorer) btnExplorer.className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200 flex items-center gap-2";
+                if (explorerCont) explorerCont.classList.add('hidden');
+                if (reviewCont) reviewCont.classList.remove('hidden');
+                
+                if (searchSidebar) searchSidebar.classList.add('hidden');
+                if (notebookSidebar) notebookSidebar.classList.remove('hidden');
+                
+                initSRSReview();
+            }
+        }
+
+        function initSRSReview() {
+            reviewCards = [...currentNotebook];
+            if (reviewCards.length === 0) {
+                showToast("Bạn cần tích lũy tối thiểu một từ để ôn luyện thẻ!", "fa-circle-exclamation");
+                switchTab('explorer');
+                return;
+            }
+            const revTotal = document.getElementById('review-total');
+            if (revTotal) revTotal.textContent = reviewCards.length;
+            currentReviewIdx = 0;
+            displayReviewCard(currentReviewIdx);
+        }
+
+        function displayReviewCard(idx) {
+            const word = reviewCards[idx];
+            if (!word) return;
+
+            const card = document.getElementById('review-card');
+            if (card) card.classList.remove('flipped');
+            
+            const revIdx = document.getElementById('review-idx');
+            if (revIdx) revIdx.textContent = idx + 1;
+            
+            document.getElementById('card-front-hz').textContent = word.hz;
+            document.getElementById('card-back-py').innerHTML = `${word.py} ${word.hv ? `<span class="text-xs text-amber-200/80 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20 ml-2 font-sans font-semibold">${word.hv}</span>` : ''}`;
+            document.getElementById('card-back-mean').textContent = word.mean;
+            document.getElementById('card-back-story').textContent = `“${word.story}”`;
+
+            const radBox = document.getElementById('card-back-radicals-box');
+            if (radBox) {
+                radBox.innerHTML = '';
+                if (word.radicals && word.radicals.length > 0) {
+                    word.radicals.forEach(r => {
+                        const span = document.createElement('span');
+                        span.className = "text-[10px] bg-slate-800 border border-slate-700 text-slate-300 px-2 py-1 rounded-lg";
+                        span.textContent = `${r.char} (${r.name})`;
+                        radBox.appendChild(span);
+                    });
+                }
+            }
+        }
+
+        function flipReviewCard() {
+            const card = document.getElementById('review-card');
+            if (card) card.classList.toggle('flipped');
+        }
+
+        function nextReviewCard() {
+            if (currentReviewIdx < reviewCards.length - 1) {
+                currentReviewIdx++;
+                displayReviewCard(currentReviewIdx);
+            } else {
+                currentReviewIdx = 0;
+                displayReviewCard(currentReviewIdx);
+            }
+        }
+
+        function prevReviewCard() {
+            if (currentReviewIdx > 0) {
+                currentReviewIdx--;
+                displayReviewCard(currentReviewIdx);
+            } else {
+                currentReviewIdx = reviewCards.length - 1;
+                displayReviewCard(currentReviewIdx);
+            }
+        }
+
+        function setSRSGrade(grade) {
+            const activeCard = reviewCards[currentReviewIdx];
+            if (!activeCard) return;
+
+            currentNotebook = currentNotebook.map(w => {
+                if (w.hz === activeCard.hz) {
+                    w.srs = grade;
+                }
+                return w;
+            });
+            localStorage.setItem('scholar_notebook', JSON.stringify(currentNotebook));
+            
+            let statusText = "Mới học";
+            if (grade === 'learning') statusText = "Đang ôn";
+            if (grade === 'mastered') statusText = "Đã thuộc";
+
+            showToast(`Đã lưu trạng thái: ${statusText}!`, "fa-circle-check");
+            renderNotebook();
+            
+            setTimeout(() => {
+                nextReviewCard();
+            }, 300);
+        }
+
+        function shuffleReviewCards() {
+            for (let i = reviewCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [reviewCards[i], reviewCards[j]] = [reviewCards[j], reviewCards[i]];
+            }
+            currentReviewIdx = 0;
+            displayReviewCard(currentReviewIdx);
+            showToast("Đã xáo trộn thứ tự thẻ ôn tập thành công!", "fa-shuffle");
+        }
+
+        function showToast(message, iconClass) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const text = document.getElementById('toast-message');
+
+            if (!toast || !icon || !text) return;
+
+            icon.className = `fa-solid ${iconClass || 'fa-bell'} text-amber-400 mr-2`;
+            text.textContent = message;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
