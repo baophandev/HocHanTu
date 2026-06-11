@@ -147,6 +147,9 @@
                 <button onclick="switchTab('review')" id="btn-tab-review" class="px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200 flex items-center gap-1.5 sm:gap-2">
                     <i class="fa-solid fa-graduation-cap"></i> <span class="hidden sm:inline">Luyện Tập (SRS)</span>
                 </button>
+                <a href="./hdsd.html" class="p-2 sm:p-3 bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 rounded-xl transition-all border border-slate-700 flex items-center justify-center" title="Hướng dẫn sử dụng">
+                    <i class="fa-solid fa-circle-question text-base sm:text-lg"></i>
+                </a>
                 <button onclick="openSettingsModal()" class="p-2 sm:p-3 bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 rounded-xl transition-all relative border border-slate-700" title="Cấu hình Gemini API">
                     <i class="fa-solid fa-gear text-base sm:text-lg"></i>
                     <span id="api-status-badge" class="absolute top-1 right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 border-2 border-scholardark"></span>
@@ -219,7 +222,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-white tracking-wide">Trình Phân Tích Chữ Hán Thư Họa Gemini AI</h3>
                     <p class="text-slate-400 max-w-md mt-2 text-sm leading-relaxed">
-                        Hãy nhập chữ Hán hoặc cụm từ bạn muốn tự học vào ô tìm kiếm bên trái. Hệ thống sở hữu động cơ thông minh tự bảo vệ chống nghẽn API!
+                        Hãy nhập chữ Hán hoặc cụm từ bạn muốn tự học vào ô tìm kiếm bên trái. Hệ thống sở hữu động cơ thông minh tự bảo vệ chống nghẽn API! Xem chi tiết tại <a href="./hdsd.html" class="text-amber-400 font-bold hover:underline">Hướng dẫn sử dụng</a>.
                     </p>
                     <div class="mt-8">
                         <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-3">Từ tiêu biểu khuyên dùng</span>
@@ -450,7 +453,7 @@
                 <span>Cấu hình Gemini API Key</span>
             </h3>
             <p class="text-xs text-slate-400 mb-5 leading-relaxed">
-                Dán khóa Gemini API Key cá nhân của bạn vào đây hoặc chỉnh sửa trực tiếp hằng số <code class="text-amber-400 font-bold">DIRECT_API_KEY</code> ở dòng 350 của file nguồn.
+                Bạn chưa có khóa? Lấy miễn phí tại <a href="https://aistudio.google.com/" target="_blank" class="text-amber-400 font-bold hover:underline">Google AI Studio <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>. Dán khóa API cá nhân của bạn vào đây hoặc chỉnh sửa hằng số <code class="text-amber-400 font-bold">DIRECT_API_KEY</code> trong file nguồn.
             </p>
 
             <div class="space-y-4">
