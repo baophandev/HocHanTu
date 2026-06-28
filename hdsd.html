@@ -6,7 +6,7 @@
     <title>Hướng Dẫn Sử Dụng - Hán Tự Thâm Uyển</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Serif+TC:wght@400;600;700;900&family=Oswald:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -15,11 +15,15 @@
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         serif: ['Noto Serif TC', 'serif'],
+                        oswald: ['Oswald', 'sans-serif'],
+                        lora: ['Lora', 'serif'],
                     },
                     colors: {
-                        scholardark: '#0F141C',
-                        scholarlight: '#17202E',
-                        scholaraccent: '#C5A880', /* Golden Sand */
+                        strvdark: '#0C0E10',
+                        strvcard: '#131619',
+                        strvborder: '#1E2226',
+                        strvred: '#FF1E3B',
+                        strvtext: '#8E959E',
                     }
                 }
             }
@@ -30,18 +34,18 @@
             width: 5px;
         }
         .custom-scroll::-webkit-scrollbar-track {
-            background: rgba(15, 20, 28, 0.1);
+            background: rgba(12, 14, 16, 0.1);
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background: #C5A880;
+            background: #FF1E3B;
             border-radius: 99px;
         }
-        .glow-gold {
-            box-shadow: 0 0 25px rgba(197, 168, 128, 0.08);
+        .glow-red {
+            box-shadow: 0 0 25px rgba(255, 30, 59, 0.12);
         }
-        .glow-gold-hover:hover {
-            box-shadow: 0 0 30px rgba(197, 168, 128, 0.18);
-            border-color: rgba(197, 168, 128, 0.4);
+        .glow-red-hover:hover {
+            box-shadow: 0 0 30px rgba(255, 30, 59, 0.18);
+            border-color: rgba(255, 30, 59, 0.4);
         }
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px); }
@@ -52,298 +56,324 @@
         }
     </style>
 </head>
-<body class="bg-scholardark text-slate-200 font-sans min-h-screen flex flex-col selection:bg-amber-500/20 selection:text-amber-300">
 
-    <header class="bg-scholarlight/80 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <img src="./logo-removebg-preview.png" class="w-12 sm:w-16 shrink-0" alt="Logo" onerror="this.src='https://placehold.co/100x100/17202e/c5a880?text=HanTu'">
-                <div>
-                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">
-                        Hướng Dẫn Sử Dụng
-                    </h1>
-                    <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Học chữ Hán trực giác bằng Trình phân tích AI & Luyện tập SRS</p>
+<body class="bg-strvdark text-zinc-100 font-sans min-h-screen flex flex-col selection:bg-strvred/20 selection:text-strvred overflow-x-hidden">
+
+    <!-- Fixed Left Sidebar for Desktop -->
+    <aside class="hidden lg:flex fixed left-0 top-0 bottom-0 w-24 border-r border-strvborder flex-col justify-between items-center py-10 z-50 bg-strvdark select-none">
+        <!-- Logo -->
+        <div class="font-oswald text-2xl font-extrabold tracking-tighter text-strvred select-none">
+            STRV
+        </div>
+        
+        <!-- Rotated text in the middle -->
+        <div class="flex flex-col items-center space-y-28">
+            <div class="rotate-[-90deg] origin-center whitespace-nowrap text-[9px] font-bold uppercase tracking-widest text-zinc-600 font-oswald">
+                BRANDING & WEBSITE
+            </div>
+            <div class="rotate-[-90deg] origin-center whitespace-nowrap text-[9px] font-bold uppercase tracking-widest text-zinc-600 font-oswald">
+                DESIGNED AT STRV
+            </div>
+        </div>
+        
+        <!-- Bottom Indicator -->
+        <div class="text-[9px] font-bold text-zinc-700 font-oswald">
+            © 2026
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="lg:pl-24 flex-grow flex flex-col min-h-screen w-full">
+        
+        <!-- Header -->
+        <header class="bg-strvdark border-b border-strvborder sticky top-0 z-40">
+            <div class="max-w-6xl mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
+                <div class="flex items-center space-x-4 min-w-0">
+                    <span class="lg:hidden font-oswald text-2xl font-extrabold tracking-tighter text-strvred select-none mr-2">STRV</span>
+                    <div class="h-6 w-[1px] bg-strvborder lg:hidden"></div>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest font-oswald truncate">CẨM NANG HƯỚNG DẪN HỌC TẬP</p>
                 </div>
-            </div>
 
-            <div>
-                <a href="./index.html" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 hover:bg-amber-600 text-scholardark transition-all duration-300 flex items-center gap-2 shadow-lg hover:scale-[1.02] active:scale-[0.98]">
-                    <i class="fa-solid fa-house"></i> <span>Quay lại ứng dụng</span>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        <!-- Hero Section -->
-        <section class="text-center mb-12">
-            <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full text-xs font-semibold tracking-wider uppercase">Cẩm nang học tập</span>
-            <h2 class="text-3xl sm:text-4xl font-serif font-black text-white mt-4 tracking-wide">Làm Chủ Phương Pháp Học Hán Tự</h2>
-            <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2 leading-relaxed">
-                Khám phá cách sử dụng tối ưu công nghệ Phân tích chiết tự tự động từ Gemini AI và phương pháp lặp lại ngắt quãng (SRS) để ghi nhớ chữ Hán vĩnh viễn.
-            </p>
-        </section>
-
-        <!-- Main Guide Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-            
-            <!-- Navigation Sidebar (Sticky) -->
-            <nav class="md:col-span-4 bg-scholarlight/50 border border-slate-800/80 p-5 rounded-3xl sticky top-24 space-y-2 hidden md:block">
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest px-3 mb-2">Danh mục mục lục</p>
-                <a href="#api-setup" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 transition-all">
-                    <i class="fa-solid fa-key text-amber-500 w-4"></i> 1. Cấu Hình API Key
-                </a>
-                <a href="#quickstart" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 transition-all">
-                    <i class="fa-solid fa-bolt text-amber-500 w-4"></i> 2. Khởi Động Nhanh
-                </a>
-                <a href="#ai-analyzer" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 transition-all">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-500 w-4"></i> 3. Trình Phân Tích AI
-                </a>
-                <a href="#cinema" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 transition-all">
-                    <i class="fa-solid fa-film text-amber-500 w-4"></i> 4. Điện Ảnh Thư Họa
-                </a>
-                <a href="#writing" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 transition-all">
-                    <i class="fa-solid fa-pen-nib text-amber-500 w-4"></i> 5. Bảng Vẽ Thư Pháp
-                </a>
-                <a href="#srs" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 transition-all">
-                    <i class="fa-solid fa-graduation-cap text-amber-500 w-4"></i> 6. Luyện Tập SRS
-                </a>
-            </nav>
-
-            <!-- Content Area -->
-            <div class="md:col-span-8 space-y-10">
-
-                <!-- 1. Cấu hình & Chống nghẽn -->
-                <section id="api-setup" class="bg-scholarlight p-6 sm:p-8 rounded-3xl border border-slate-800/80 shadow-xl glow-gold transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-4 border-b border-slate-800 pb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-key"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white font-serif">1. Cấu Hình API Key & Phòng Thủ Quá Tải</h3>
-                    </div>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
-                        Để tự do tra cứu mọi từ vựng mới không giới hạn, hãy cấu hình khóa API cá nhân của bạn:
-                    </p>
-                    
-                    <div class="space-y-4">
-                        <div class="p-4.5 bg-scholardark border border-slate-800 rounded-2xl space-y-3">
-                            <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Hướng dẫn lấy Gemini API Key miễn phí</span>
-                            
-                            <div class="space-y-2 text-xs text-slate-300 leading-relaxed">
-                                <p class="font-bold text-amber-200">Các bước thực hiện trên Google AI Studio:</p>
-                                <ol class="list-decimal list-inside space-y-1.5 pl-1 text-slate-400">
-                                    <li>Truy cập <a href="https://aistudio.google.com/" target="_blank" class="text-amber-400 font-bold hover:underline">Google AI Studio <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px]"></i></a> và đăng nhập bằng tài khoản Google.</li>
-                                    <li>Nhấp vào nút <strong class="text-slate-200">Get API key</strong> ở thanh công cụ bên trái (hoặc nút <strong class="text-slate-200">Create API Key</strong>).</li>
-                                    <li>Nhấp vào nút <strong class="text-slate-200">Create API Key</strong> màu xanh dương.</li>
-                                    <li>Chọn <strong class="text-slate-200">Create API Key in new project</strong> để tạo khóa mới miễn phí.</li>
-                                    <li>Sao chép chuỗi mã khóa được hiển thị (bắt đầu bằng ký tự <code class="text-amber-400 font-mono">AIzaSy...</code>).</li>
-                                </ol>
-                                <p class="font-bold text-amber-200 mt-3">Cách nhập vào ứng dụng:</p>
-                                <p class="text-slate-400 pl-1">
-                                    Click vào biểu tượng <i class="fa-solid fa-gear text-amber-400"></i> (Bánh răng cài đặt) ở góc trên bên phải ứng dụng Hán Tự, dán khóa vào ô <strong class="text-slate-200">Gemini API Key</strong>, chọn Mô hình rồi nhấn <strong class="text-amber-200">Lưu cấu hình</strong>.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="p-4.5 bg-scholardark border border-slate-800 rounded-2xl">
-                            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Cơ chế phòng thủ quá tải đa tầng</span>
-                            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                                Nhờ cơ chế tự động bảo vệ tích hợp sẵn, bạn hoàn toàn không lo ứng dụng bị đứt gãy trải nghiệm:
-                            </p>
-                            <ul class="mt-2 space-y-2 text-xs text-slate-400">
-                                <li class="flex gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <strong>Tự động thử lại (Retry with Backoff):</strong> Tự phát hiện cổng bận (503) hoặc chạm hạn mức giây (429) để trì hoãn tự động thử lại sau vài giây.</li>
-                                <li class="flex gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <strong>Xoay vòng mô hình (Fallback Chain):</strong> Nếu mô hình chính bị nghẽn hoàn toàn, hệ thống tự động xoay chuyển tiếp năng lực qua các mô hình dự phòng kế tiếp.</li>
-                                <li class="flex gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <strong>Động cơ cục bộ (Local AI Engine):</strong> Nếu không kết nối được Internet hoặc API Key hết lượt gọi trong ngày, ứng dụng tự động bóc tách từ vựng tức thì từ kho dữ liệu offline có sẵn.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 2. Khởi động nhanh -->
-                <section id="quickstart" class="bg-scholarlight p-6 sm:p-8 rounded-3xl border border-slate-800/80 shadow-xl glow-gold transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-4 border-b border-slate-800 pb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-bolt"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white font-serif">2. Hướng Dẫn Khởi Động Nhanh</h3>
-                    </div>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
-                        Để bắt đầu hành trình bóc tách chữ Hán, bạn chỉ cần thực hiện 3 bước đơn giản sau:
-                    </p>
-                    <ol class="space-y-3.5 text-sm text-slate-300">
-                        <li class="flex gap-3 items-start">
-                            <span class="w-5 h-5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</span>
-                            <div>
-                                <strong class="text-amber-200">Nhập từ cần tra:</strong> Gõ từ hoặc chữ Hán bất kỳ (Ví dụ: <code class="text-amber-400 font-mono font-bold">應該</code> hoặc <code class="text-amber-400 font-mono font-bold">危險</code>) vào thanh tìm kiếm ở khung bên trái.
-                            </div>
-                        </li>
-                        <li class="flex gap-3 items-start">
-                            <span class="w-5 h-5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</span>
-                            <div>
-                                <strong class="text-amber-200">Bấm Phân tích:</strong> Nhấn phím <kbd class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-mono">Enter</kbd> hoặc click nút mũi tên màu vàng.
-                            </div>
-                        </li>
-                        <li class="flex gap-3 items-start">
-                            <span class="w-5 h-5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</span>
-                            <div>
-                                <strong class="text-amber-200">Tận hưởng kết quả:</strong> Màn hình sẽ hiển thị cấu trúc chi tiết, câu chuyện liên tưởng và các hướng dẫn học tập sinh động.
-                            </div>
-                        </li>
-                    </ol>
-                    <div class="mt-5 bg-amber-950/20 border border-amber-900/30 p-4 rounded-2xl flex items-start gap-3">
-                        <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            <strong class="text-amber-200">Lưu ý:</strong> Nếu chưa cấu hình API Key, hệ thống sẽ sử dụng <strong>Cơ sở dữ liệu mẫu nhanh</strong> đối với các từ demo hoặc chuyển sang <strong>Local AI Engine</strong> để hiển thị phân tích cơ bản ngoại tuyến.
-                        </p>
-                    </div>
-                </section>
-
-                <!-- 3. Trình phân tích AI -->
-                <section id="ai-analyzer" class="bg-scholarlight p-6 sm:p-8 rounded-3xl border border-slate-800/80 shadow-xl glow-gold transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-4 border-b border-slate-800 pb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white font-serif">3. Sức Mạnh Trình Phân Tích AI</h3>
-                    </div>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
-                        Trình phân tích thông minh bóc tách một từ thành 5 phần dữ liệu cốt lõi giúp tối ưu hóa việc ghi nhớ:
-                    </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="p-4 bg-scholardark rounded-2xl border border-slate-800/80">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><i class="fa-solid fa-puzzle-piece"></i> Bóc tách bộ thủ</h4>
-                            <p class="text-[11px] text-slate-400 leading-normal">Bẻ khóa ký tự thành các nét ghép bộ thủ độc lập kèm giải thích cặn kẽ ý nghĩa tượng hình cổ của bộ thủ đó.</p>
-                        </div>
-                        <div class="p-4 bg-scholardark rounded-2xl border border-slate-800/80">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><i class="fa-solid fa-book-open"></i> Câu chuyện liên tưởng</h4>
-                            <p class="text-[11px] text-slate-400 leading-normal">Liên kết ý nghĩa của từng bộ thủ thành một câu chuyện ngắn thú vị, biến lý thuyết khô khan thành ký ức hình ảnh sinh động.</p>
-                        </div>
-                        <div class="p-4 bg-scholardark rounded-2xl border border-slate-800/80">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><i class="fa-solid fa-volume-high"></i> Phát âm chuẩn xác</h4>
-                            <p class="text-[11px] text-slate-400 leading-normal">Công nghệ TTS hỗ trợ nghe phát âm trực tiếp cho cả từ vựng trung tâm lẫn các câu ví dụ ngữ cảnh đính kèm.</p>
-                        </div>
-                        <div class="p-4 bg-scholardark rounded-2xl border border-slate-800/80">
-                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center gap-1.5"><i class="fa-solid fa-list-ol"></i> Hướng dẫn nét thuận</h4>
-                            <p class="text-[11px] text-slate-400 leading-normal">Cung cấp thứ tự từng nét viết (Stroke Order) để bạn luyện tập đúng chuẩn quy tắc bút thuận Trung Hoa.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 4. Điện ảnh thư họa -->
-                <section id="cinema" class="bg-scholarlight p-6 sm:p-8 rounded-3xl border border-slate-800/80 shadow-xl glow-gold transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-4 border-b border-slate-800 pb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-film"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white font-serif">4. Điện Ảnh Thư Họa Động (Visual Cinema)</h3>
-                    </div>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
-                        Tính năng độc bản giúp biến quá trình chuyển chữ Hán thành hội họa động qua 3 giai đoạn trực giác:
-                    </p>
-                    <div class="relative pl-6 border-l border-amber-500/30 space-y-5">
-                        <div class="relative">
-                            <div class="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-scholardark border-2 border-amber-500 flex items-center justify-center"><div class="w-1.5 h-1.5 bg-amber-500 rounded-full"></div></div>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Giai đoạn 1: Bóc Tách Bộ Thủ (Phân cực)</h4>
-                            <p class="text-xs text-slate-400 mt-1">Các bộ thủ bay lơ lửng bóc rời khỏi chữ gốc để bạn ghi nhớ thành phần cấu tạo.</p>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-scholardark border-2 border-amber-500 flex items-center justify-center"><div class="w-1.5 h-1.5 bg-amber-500 rounded-full"></div></div>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Giai đoạn 2: Loang Mực Thư Pháp (Hội Tụ)</h4>
-                            <p class="text-xs text-slate-400 mt-1">Chữ Hán chính thức được viết đè lên với hiệu ứng loang mực thư pháp mềm mại, sinh động.</p>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-scholardark border-2 border-amber-500 flex items-center justify-center"><div class="w-1.5 h-1.5 bg-amber-500 rounded-full"></div></div>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Giai đoạn 3: Hóa Hình Câu Chuyện (Visual Collage)</h4>
-                            <p class="text-xs text-slate-400 mt-1">Hội tụ các khối biểu tượng Emoji gợi nhớ câu chuyện giúp khắc sâu liên tưởng thị giác.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 5. Bảng vẽ thư pháp -->
-                <section id="writing" class="bg-scholarlight p-6 sm:p-8 rounded-3xl border border-slate-800/80 shadow-xl glow-gold transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-4 border-b border-slate-800 pb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-pen-nib"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white font-serif">5. Bảng Luyện Viết Cảm Ứng</h3>
-                    </div>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
-                        Cơ chế luyện viết thư pháp kỹ thuật số giúp bạn nhớ sâu nét chữ:
-                    </p>
-                    <ul class="space-y-2 text-sm text-slate-300 list-disc list-inside">
-                        <li><strong class="text-amber-200">Hình nền nét mẫu mờ:</strong> Bảng vẽ tích hợp in mờ bóng chữ Hán hiện tại phía dưới làm nét vẽ mẫu chuẩn.</li>
-                        <li><strong class="text-amber-200">Độ dày cọ động:</strong> Cọ vẽ mô phỏng nét bút lông trung hoa dựa trên tốc độ di chuột hoặc ngón tay cảm ứng (di chuyển nhanh nét thanh, dừng nhấn nét đậm).</li>
-                        <li><strong class="text-amber-200">Xóa viết lại nhanh:</strong> Chỉ với một cú bấm "Xóa", bạn có thể luyện tập lại từ đầu vô số lần.</li>
-                    </ul>
-                </section>
-
-                <!-- 6. Luyện tập SRS -->
-                <section id="srs" class="bg-scholarlight p-6 sm:p-8 rounded-3xl border border-slate-800/80 shadow-xl glow-gold transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-4 border-b border-slate-800 pb-4">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white font-serif">6. Phương Pháp Ôn Luyện Thẻ Nhớ (SRS)</h3>
-                    </div>
-                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
-                        Khi click chọn tab <strong class="text-amber-400">Luyện Tập (SRS)</strong> ở thanh tiêu đề, bạn sẽ bước vào không gian ôn tập tối ưu hóa trí nhớ:
-                    </p>
-                    <div class="space-y-3.5 text-sm text-slate-300">
-                        <div class="flex items-start gap-3">
-                            <i class="fa-solid fa-clone text-amber-500 mt-0.5"></i>
-                            <div>
-                                <h4 class="font-bold text-white text-xs uppercase tracking-wide">Thẻ lật 2 mặt (Flashcards)</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Mặt trước hiển thị mặt chữ Hán lớn để thử thách phản xạ. Chạm vào thẻ để lật mặt sau xem phiên âm, nghĩa và câu chuyện chiết tự gợi nhớ.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fa-solid fa-layer-group text-amber-500 mt-0.5"></i>
-                            <div>
-                                <h4 class="font-bold text-white text-xs uppercase tracking-wide">Phân phối 3 mức độ nhớ (Spaced Repetition)</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Đánh giá trạng thái ghi nhớ của bạn bằng 3 nút:
-                                    <span class="text-red-400 font-bold">Mới học (New)</span>,
-                                    <span class="text-amber-400 font-bold">Đang ôn (Learning)</span>, và
-                                    <span class="text-emerald-400 font-bold">Đã thuộc (Mastered)</span>. Hệ thống lưu trạng thái độc lập vào Sổ tay để ưu tiên hiển thị các từ khó.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <i class="fa-solid fa-shuffle text-amber-500 mt-0.5"></i>
-                            <div>
-                                <h4 class="font-bold text-white text-xs uppercase tracking-wide">Xáo trộn ngẫu nhiên</h4>
-                                <p class="text-xs text-slate-400 mt-0.5">Bấm nút "Xáo trộn thẻ" để đảo lộn thứ tự từ vựng, tránh hiện tượng bộ não ghi nhớ theo thói quen thứ tự trước sau.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-
-        </div>
-
-        <!-- Call to Action -->
-        <section class="mt-16 text-center bg-gradient-to-br from-amber-500/10 to-amber-900/5 border border-amber-500/20 rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden glow-gold">
-            <div class="absolute -right-12 -bottom-12 text-amber-500/5 text-9xl font-serif select-none pointer-events-none">
-                <i class="fa-solid fa-graduation-cap"></i>
-            </div>
-            <div class="relative z-10 max-w-xl mx-auto space-y-5">
-                <h3 class="text-2xl font-serif font-black text-white">Bạn Đã Sẵn Sàng Bắt Đầu?</h3>
-                <p class="text-slate-300 text-sm leading-relaxed">
-                    Hãy quay trở về màn hình học tập, nhập chữ Hán bất kỳ hoặc kích hoạt các từ tiêu biểu để kiểm chứng ngay những tính năng thú vị trên!
-                </p>
-                <div class="pt-2">
-                    <a href="./index.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-scholardark font-extrabold text-sm transition-all duration-300 shadow-md active:scale-95 hover:scale-[1.02]">
-                        <span>Bắt đầu phân tích ngay</span> <i class="fa-solid fa-arrow-right"></i>
+                <div>
+                    <a href="./index.html" class="px-4 py-2.5 rounded-md text-xs sm:text-sm font-bold bg-strvred hover:bg-red-600 text-white transition-all duration-300 flex items-center gap-2 shadow-lg uppercase tracking-wider font-oswald">
+                        <i class="fa-solid fa-house"></i> <span>Quay lại ứng dụng</span>
                     </a>
                 </div>
             </div>
-        </section>
+        </header>
 
-    </main>
+        <main class="flex-grow max-w-5xl mx-auto px-6 sm:px-10 py-10 w-full">
+            <!-- Hero Section -->
+            <section class="py-6 border-b border-strvborder mb-12 text-left">
+                <span class="text-[10px] font-bold text-strvred uppercase tracking-widest font-oswald">Cẩm nang học tập</span>
+                <h2 class="text-4xl sm:text-6xl font-oswald font-extrabold uppercase text-white mt-4 tracking-tighter leading-none mb-6">LÀM CHỦ PHƯƠNG PHÁP HỌC HÁN TỰ</h2>
+                <div class="w-12 h-[2px] bg-white my-6"></div>
+                <p class="font-lora text-strvtext text-sm sm:text-base leading-relaxed max-w-xl">
+                    Khám phá cách sử dụng tối ưu công nghệ Phân tích chiết tự tự động từ Gemini AI và phương pháp lặp lại ngắt quãng (SRS) để ghi nhớ chữ Hán vĩnh viễn.
+                </p>
+            </section>
 
-    <footer class="bg-scholarlight border-t border-slate-800/80 mt-16 py-8 text-center text-xs text-slate-500 font-medium">
-        <p>© 2026 Hán Tự - Phan Gia Bảo. Bản hướng dẫn học tập thông minh.</p>
-    </footer>
+            <!-- Main Guide Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                
+                <!-- Navigation Sidebar (Sticky) -->
+                <nav class="md:col-span-4 bg-strvcard border border-strvborder p-5 rounded-md sticky top-24 space-y-2 hidden md:block select-none">
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest px-3 mb-2 font-oswald">Danh mục hướng dẫn</p>
+                    <a href="#api-setup" class="flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm font-bold uppercase tracking-wider font-oswald text-zinc-300 hover:bg-strvdark hover:text-strvred transition-all border border-transparent hover:border-strvborder">
+                        <i class="fa-solid fa-key text-strvred w-4 text-xs"></i> 1. API Key Setup
+                    </a>
+                    <a href="#quickstart" class="flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm font-bold uppercase tracking-wider font-oswald text-zinc-300 hover:bg-strvdark hover:text-strvred transition-all border border-transparent hover:border-strvborder">
+                        <i class="fa-solid fa-bolt text-strvred w-4 text-xs"></i> 2. Quickstart
+                    </a>
+                    <a href="#ai-analyzer" class="flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm font-bold uppercase tracking-wider font-oswald text-zinc-300 hover:bg-strvdark hover:text-strvred transition-all border border-transparent hover:border-strvborder">
+                        <i class="fa-solid fa-wand-magic-sparkles text-strvred w-4 text-xs"></i> 3. AI Deconstructor
+                    </a>
+                    <a href="#cinema" class="flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm font-bold uppercase tracking-wider font-oswald text-zinc-300 hover:bg-strvdark hover:text-strvred transition-all border border-transparent hover:border-strvborder">
+                        <i class="fa-solid fa-film text-strvred w-4 text-xs"></i> 4. Mnemonic Cinema
+                    </a>
+                    <a href="#writing" class="flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm font-bold uppercase tracking-wider font-oswald text-zinc-300 hover:bg-strvdark hover:text-strvred transition-all border border-transparent hover:border-strvborder">
+                        <i class="fa-solid fa-pen-nib text-strvred w-4 text-xs"></i> 5. Calligraphy Pad
+                    </a>
+                    <a href="#srs" class="flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm font-bold uppercase tracking-wider font-oswald text-zinc-300 hover:bg-strvdark hover:text-strvred transition-all border border-transparent hover:border-strvborder">
+                        <i class="fa-solid fa-graduation-cap text-strvred w-4 text-xs"></i> 6. SRS Review
+                    </a>
+                </nav>
 
+                <!-- Content Area -->
+                <div class="md:col-span-8 space-y-12">
+
+                    <!-- 1. Cấu hình & Chống nghẽn -->
+                    <section id="api-setup" class="bg-strvcard p-6 sm:p-8 rounded-md border border-strvborder shadow-xl glow-red space-y-6">
+                        <div class="flex items-center gap-3 border-b border-strvborder pb-4">
+                            <div class="w-10 h-10 rounded-md bg-strvred/10 border border-strvred/20 text-strvred flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-oswald uppercase tracking-wide">1. Cấu Hình API Key & Phòng Thủ Quá Tải</h3>
+                        </div>
+                        <p class="text-sm text-zinc-300 leading-relaxed font-lora">
+                            Để tự do tra cứu mọi từ vựng mới không giới hạn, hãy cấu hình khóa API cá nhân của bạn:
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <div class="p-5 bg-strvdark border border-strvborder rounded-md space-y-3">
+                                <span class="text-[9px] bg-strvred/10 text-strvred border border-strvred/20 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider font-oswald">Hướng dẫn lấy Gemini API Key miễn phí</span>
+                                
+                                <div class="space-y-3 text-xs text-zinc-300 leading-relaxed">
+                                    <p class="font-bold text-white">Các bước thực hiện trên Google AI Studio:</p>
+                                    <ol class="list-decimal list-inside space-y-1.5 pl-1 text-strvtext font-sans">
+                                        <li>Truy cập <a href="https://aistudio.google.com/" target="_blank" class="text-strvred font-bold hover:underline">Google AI Studio <i class="fa-solid fa-arrow-up-right-from-square text-[9.5px]"></i></a> và đăng nhập bằng tài khoản Google.</li>
+                                        <li>Nhấp vào nút <strong class="text-zinc-100">Get API key</strong> ở thanh công cụ bên trái (hoặc nút <strong class="text-zinc-100">Create API Key</strong>).</li>
+                                        <li>Nhấp vào nút <strong class="text-zinc-100">Create API Key</strong> màu xanh dương.</li>
+                                        <li>Chọn <strong class="text-zinc-100">Create API Key in new project</strong> để tạo khóa mới miễn phí.</li>
+                                        <li>Sao chép chuỗi mã khóa được hiển thị (bắt đầu bằng ký tự <code class="text-strvred font-mono">AIzaSy...</code>).</li>
+                                    </ol>
+                                    <p class="font-bold text-white mt-3">Cách nhập vào ứng dụng:</p>
+                                    <p class="text-strvtext pl-1">
+                                        Click vào biểu tượng <i class="fa-solid fa-gear text-strvred"></i> (Bánh răng cài đặt) ở góc trên bên phải ứng dụng Hán Tự, dán khóa vào ô <strong class="text-zinc-100">Gemini API Key</strong>, chọn Mô hình rồi nhấn <strong class="text-white">Lưu cấu hình</strong>.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="p-5 bg-strvdark border border-strvborder rounded-md space-y-3">
+                                <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider font-oswald">Cơ chế phòng thủ quá tải đa tầng</span>
+                                <p class="text-xs text-zinc-300 leading-relaxed font-lora">
+                                    Nhờ cơ chế tự động bảo vệ tích hợp sẵn, bạn hoàn toàn không lo ứng dụng bị đứt gãy trải nghiệm:
+                                </p>
+                                <ul class="space-y-2.5 text-xs text-strvtext font-sans">
+                                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <strong>Tự động thử lại (Retry with Backoff):</strong> Tự phát hiện cổng bận (503) hoặc chạm hạn mức giây (429) để trì hoãn tự động thử lại sau vài giây.</li>
+                                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <strong>Xoay vòng mô hình (Fallback Chain):</strong> Nếu mô hình chính bị nghẽn hoàn toàn, hệ thống tự động xoay chuyển tiếp năng lực qua các mô hình dự phòng kế tiếp.</li>
+                                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <strong>Động cơ cục bộ (Local AI Engine):</strong> Nếu không kết nối được Internet hoặc API Key hết lượt gọi trong ngày, ứng dụng tự động bóc tách từ vựng tức thì từ kho dữ liệu offline có sẵn.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. Khởi động nhanh -->
+                    <section id="quickstart" class="bg-strvcard p-6 sm:p-8 rounded-md border border-strvborder shadow-xl glow-red space-y-6">
+                        <div class="flex items-center gap-3 border-b border-strvborder pb-4">
+                            <div class="w-10 h-10 rounded-md bg-strvred/10 border border-strvred/20 text-strvred flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-oswald uppercase tracking-wide">2. Hướng Dẫn Khởi Động Nhanh</h3>
+                        </div>
+                        <p class="text-sm text-zinc-300 leading-relaxed font-lora">
+                            Để bắt đầu hành trình bóc tách chữ Hán, bạn chỉ cần thực hiện 3 bước đơn giản sau:
+                        </p>
+                        <ol class="space-y-4 text-xs text-zinc-300 font-sans">
+                            <li class="flex gap-3 items-start">
+                                <span class="font-oswald text-xs font-bold text-strvred shrink-0 mt-0.5">No. 01</span>
+                                <div>
+                                    <strong class="text-white uppercase tracking-wider font-oswald text-[11px]">Nhập từ cần tra:</strong> Gõ từ hoặc chữ Hán bất kỳ (Ví dụ: <code class="text-strvred font-mono font-bold">應該</code> hoặc <code class="text-strvred font-mono font-bold">危險</code>) vào thanh tìm kiếm ở khung bên trái.
+                                </div>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="font-oswald text-xs font-bold text-strvred shrink-0 mt-0.5">No. 02</span>
+                                <div>
+                                    <strong class="text-white uppercase tracking-wider font-oswald text-[11px]">Bấm Phân tích:</strong> Nhấn phím <kbd class="px-1.5 py-0.5 bg-strvdark border border-strvborder rounded text-[10px] font-mono">Enter</kbd> hoặc click nút mũi tên màu đỏ.
+                                </div>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="font-oswald text-xs font-bold text-strvred shrink-0 mt-0.5">No. 03</span>
+                                <div>
+                                    <strong class="text-white uppercase tracking-wider font-oswald text-[11px]">Tận hưởng kết quả:</strong> Màn hình sẽ hiển thị cấu trúc chi tiết, câu chuyện liên tưởng và các hướng dẫn học tập sinh động.
+                                </div>
+                            </li>
+                        </ol>
+                        <div class="bg-red-950/20 border border-red-900/30 p-4 rounded-md flex items-start gap-3">
+                            <i class="fa-solid fa-circle-info text-strvred mt-0.5"></i>
+                            <p class="text-xs text-strvtext leading-relaxed font-sans">
+                                <strong class="text-white">Lưu ý:</strong> Nếu chưa cấu hình API Key, hệ thống sẽ sử dụng <strong>Cơ sở dữ liệu mẫu nhanh</strong> đối với các từ demo hoặc chuyển sang <strong>Local AI Engine</strong> để hiển thị phân tích cơ bản ngoại tuyến.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- 3. Trình phân tích AI -->
+                    <section id="ai-analyzer" class="bg-strvcard p-6 sm:p-8 rounded-md border border-strvborder shadow-xl glow-red space-y-6">
+                        <div class="flex items-center gap-3 border-b border-strvborder pb-4">
+                            <div class="w-10 h-10 rounded-md bg-strvred/10 border border-strvred/20 text-strvred flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-oswald uppercase tracking-wide">3. Sức Mạnh Trình Phân Tích AI</h3>
+                        </div>
+                        <p class="text-sm text-zinc-300 leading-relaxed font-lora">
+                            Trình phân tích thông minh bóc tách một từ thành 4 phần dữ liệu cốt lõi giúp tối ưu hóa việc ghi nhớ:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-4 bg-strvdark rounded-md border border-strvborder">
+                                <h4 class="text-xs font-bold text-strvred uppercase tracking-widest font-oswald mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-puzzle-piece"></i> Bóc tách bộ thủ</h4>
+                                <p class="text-[11px] text-strvtext leading-normal">Bẻ khóa ký tự thành các nét ghép bộ thủ độc lập kèm giải thích cặn kẽ ý nghĩa tượng hình cổ của bộ thủ đó.</p>
+                            </div>
+                            <div class="p-4 bg-strvdark rounded-md border border-strvborder">
+                                <h4 class="text-xs font-bold text-strvred uppercase tracking-widest font-oswald mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-book-open"></i> Câu chuyện liên tưởng</h4>
+                                <p class="text-[11px] text-strvtext leading-normal">Liên kết ý nghĩa của từng bộ thủ thành một câu chuyện ngắn thú vị, biến lý thuyết khô khan thành ký ức hình ảnh sinh động.</p>
+                            </div>
+                            <div class="p-4 bg-strvdark rounded-md border border-strvborder">
+                                <h4 class="text-xs font-bold text-strvred uppercase tracking-widest font-oswald mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-volume-high"></i> Phát âm chuẩn xác</h4>
+                                <p class="text-[11px] text-strvtext leading-normal">Công nghệ TTS hỗ trợ nghe phát âm trực tiếp cho cả từ vựng trung tâm lẫn các câu ví dụ ngữ cảnh đính kèm.</p>
+                            </div>
+                            <div class="p-4 bg-strvdark rounded-md border border-strvborder">
+                                <h4 class="text-xs font-bold text-strvred uppercase tracking-widest font-oswald mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-list-ol"></i> Hướng dẫn nét thuận</h4>
+                                <p class="text-[11px] text-strvtext leading-normal">Cung cấp thứ tự từng nét viết (Stroke Order) để bạn luyện tập đúng chuẩn quy tắc bút thuận Trung Hoa.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. Điện ảnh thư họa -->
+                    <section id="cinema" class="bg-strvcard p-6 sm:p-8 rounded-md border border-strvborder shadow-xl glow-red space-y-6">
+                        <div class="flex items-center gap-3 border-b border-strvborder pb-4">
+                            <div class="w-10 h-10 rounded-md bg-strvred/10 border border-strvred/20 text-strvred flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-film"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-oswald uppercase tracking-wide">4. Điện Ảnh Thư Họa Động (Visual Cinema)</h3>
+                        </div>
+                        <p class="text-sm text-zinc-300 leading-relaxed font-lora">
+                            Tính năng độc bản giúp biến quá trình chuyển chữ Hán thành hội họa động qua 3 giai đoạn trực giác:
+                        </p>
+                        <div class="relative pl-6 border-l border-strvred/30 space-y-5">
+                            <div class="relative">
+                                <div class="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-strvdark border-2 border-strvred flex items-center justify-center"><div class="w-1.5 h-1.5 bg-strvred rounded-full"></div></div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-wider font-oswald">Giai đoạn 1: Bóc Tách Bộ Thủ (Phân cực)</h4>
+                                <p class="text-xs text-strvtext mt-1 font-lora">Các bộ thủ bay lơ lửng bóc rời khỏi chữ gốc để bạn ghi nhớ thành phần cấu tạo.</p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-strvdark border-2 border-strvred flex items-center justify-center"><div class="w-1.5 h-1.5 bg-strvred rounded-full"></div></div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-wider font-oswald">Giai đoạn 2: Loang Mực Thư Pháp (Hội Tụ)</h4>
+                                <p class="text-xs text-strvtext mt-1 font-lora">Chữ Hán chính thức được viết đè lên với hiệu ứng loang mực thư pháp mềm mại, sinh động.</p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[30px] top-0 w-4 h-4 rounded-full bg-strvdark border-2 border-strvred flex items-center justify-center"><div class="w-1.5 h-1.5 bg-strvred rounded-full"></div></div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-wider font-oswald">Giai đoạn 3: Hóa Hình Câu Chuyện (Visual Collage)</h4>
+                                <p class="text-xs text-strvtext mt-1 font-lora">Hội tụ các khối biểu tượng Emoji gợi nhớ câu chuyện giúp khắc sâu liên tưởng thị giác.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 5. Bảng vẽ thư pháp -->
+                    <section id="writing" class="bg-strvcard p-6 sm:p-8 rounded-md border border-strvborder shadow-xl glow-red space-y-6">
+                        <div class="flex items-center gap-3 border-b border-strvborder pb-4">
+                            <div class="w-10 h-10 rounded-md bg-strvred/10 border border-strvred/20 text-strvred flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-pen-nib"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-oswald uppercase tracking-wide">5. Bảng Luyện Viết Cảm Ứng</h3>
+                        </div>
+                        <p class="text-sm text-zinc-300 leading-relaxed font-lora">
+                            Cơ chế luyện viết thư pháp kỹ thuật số giúp bạn nhớ sâu nét chữ:
+                        </p>
+                        <ul class="space-y-2 text-xs text-zinc-300 list-disc list-inside font-sans">
+                            <li><strong class="text-white">Hình nền nét mẫu mờ:</strong> Bảng vẽ tích hợp in mờ bóng chữ Hán hiện tại phía dưới làm nét vẽ mẫu chuẩn.</li>
+                            <li><strong class="text-white">Độ dày cọ động:</strong> Cọ vẽ mô phỏng nét bút lông trung hoa dựa trên tốc độ di chuột hoặc ngón tay cảm ứng (di chuyển nhanh nét thanh, dừng nhấn nét đậm).</li>
+                            <li><strong class="text-white">Xóa viết lại nhanh:</strong> Chỉ với một cú bấm "Xóa", bạn có thể luyện tập lại từ đầu vô số lần.</li>
+                        </ul>
+                    </section>
+
+                    <!-- 6. Luyện tập SRS -->
+                    <section id="srs" class="bg-strvcard p-6 sm:p-8 rounded-md border border-strvborder shadow-xl glow-red space-y-6">
+                        <div class="flex items-center gap-3 border-b border-strvborder pb-4">
+                            <div class="w-10 h-10 rounded-md bg-strvred/10 border border-strvred/20 text-strvred flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-oswald uppercase tracking-wide">6. Phương Pháp Ôn Luyện Thẻ Nhớ (SRS)</h3>
+                        </div>
+                        <p class="text-sm text-zinc-300 leading-relaxed font-lora">
+                            Khi click chọn tab <strong class="text-strvred">Luyện Tập (SRS)</strong> ở thanh tiêu đề, bạn sẽ bước vào không gian ôn tập tối ưu hóa trí nhớ:
+                        </p>
+                        <div class="space-y-4 text-xs text-zinc-300 font-sans">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-clone text-strvred mt-0.5"></i>
+                                <div>
+                                    <h4 class="font-bold text-white text-[11px] uppercase tracking-wider font-oswald">Thẻ lật 2 mặt (Flashcards)</h4>
+                                    <p class="text-strvtext mt-0.5">Mặt trước hiển thị mặt chữ Hán lớn để thử thách phản xạ. Chạm vào thẻ để lật mặt sau xem phiên âm, nghĩa và câu chuyện chiết tự gợi nhớ.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-layer-group text-strvred mt-0.5"></i>
+                                <div>
+                                    <h4 class="font-bold text-white text-[11px] uppercase tracking-wider font-oswald">Phân phối 3 mức độ nhớ (Spaced Repetition)</h4>
+                                    <p class="text-strvtext mt-0.5">Đánh giá trạng thái ghi nhớ của bạn bằng 3 nút:
+                                        <span class="text-red-400 font-bold">Mới học (New)</span>,
+                                        <span class="text-amber-400 font-bold">Đang ôn (Learning)</span>, và
+                                        <span class="text-emerald-400 font-bold">Đã thuộc (Mastered)</span>. Hệ thống lưu trạng thái độc lập vào Sổ tay để ưu tiên hiển thị các từ khó.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-shuffle text-strvred mt-0.5"></i>
+                                <div>
+                                    <h4 class="font-bold text-white text-[11px] uppercase tracking-wider font-oswald">Xáo trộn ngẫu nhiên</h4>
+                                    <p class="text-strvtext mt-0.5">Bấm nút "Xáo trộn thẻ" để đảo lộn thứ tự từ vựng, tránh hiện tượng bộ não ghi nhớ theo thói quen thứ tự trước sau.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+            </div>
+
+            <!-- Call to Action -->
+            <section class="mt-16 text-left bg-gradient-to-br from-strvred/5 to-strvdark border border-strvred/20 rounded-md p-8 sm:p-12 shadow-xl relative overflow-hidden glow-red">
+                <div class="absolute -right-12 -bottom-12 text-strvred/5 text-9xl font-serif select-none pointer-events-none">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="relative z-10 max-w-xl space-y-5">
+                    <h3 class="text-2xl font-oswald font-extrabold uppercase text-white tracking-wide">Bạn Đã Sẵn Sàng Bắt Đầu?</h3>
+                    <p class="text-zinc-300 text-sm leading-relaxed font-lora">
+                        Hãy quay trở về màn hình học tập, nhập chữ Hán bất kỳ hoặc kích hoạt các từ tiêu biểu để kiểm chứng ngay những tính năng thú vị trên!
+                    </p>
+                    <div class="pt-2">
+                        <a href="./index.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-strvred hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider font-oswald transition-all duration-300 shadow-md active:scale-95 hover:scale-[1.02]">
+                            <span>Bắt đầu phân tích ngay</span> <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="bg-strvdark border-t border-strvborder py-10 text-center text-xs text-zinc-600 font-medium font-oswald uppercase tracking-widest mt-12">
+            <p>© 2026 Hán Tự - Phan Gia Bảo</p>
+        </footer>
+        
+    </div>
 </body>
 </html>
